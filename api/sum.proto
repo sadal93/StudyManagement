@@ -2,15 +2,20 @@ syntax = "proto3";
 
 package helloworld;
 
-service Sum {
-
+service Addition {
     rpc Add (Input) returns ( Output) {}
+    rpc MultipleSum (Range) returns (stream Output) {}
 }
 
 
 message Input {
     int32 first = 1;
     int32 second = 2;
+}
+
+message Range {
+    int32 begin = 1;
+    int32 end = 2;
 }
 
 message Output {

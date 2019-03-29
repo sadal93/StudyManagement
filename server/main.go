@@ -27,25 +27,24 @@ import (
 	"net"
 
 	"google.golang.org/grpc"
-	pb "google.golang.org/grpc/examples/helloworldsum/helloworld"
+	pb "Thesis-demo/api"
+
 )
 
 const (
 	port = ":50051"
 )
 
-// server is used to implement helloworld.GreeterServer.
 type server struct{}
 
-// SayHello implements helloworld.GreeterServer
-func (s *server) SayHello(ctx context.Context, in *pb.HelloRequest) (*pb.HelloReply, error) {
+func (s *server) Add(ctx context.Context, in *pb.Input) (*pb.Output, error) {
 	log.Printf("Received First: %v", in.First)
 	log.Printf("Received Second: %v", in.Second)
 	var a = in.First + in.Second
-	return &pb.HelloReply{Result: a}, nil
+	return &pb.Output{Result: a}, nil
 }
 
-func (s *server) Add(in *pb.Input, stream pb.Sum_AddServer) error {
+func (s *server) MultipleSum(in *pb.Range, stream pb.Addition_MultipleSumServer) error {
 	log.Printf("Start Range: %v", in.Begin)
 	log.Printf("End Range: %v", in.End)
 	var sum int32 = 0
@@ -66,8 +65,7 @@ func main() {
 		log.Fatalf("failed to listen: %v", err)
 	}
 	s := grpc.NewServer()
-	pb.RegisterGreeterServer(s, &server{})
-	pb.RegisterSumServer(s, &server{})
+	pb.RegisterAdditionServer(s, &server{})
 	if err := s.Serve(lis); err != nil {
 		log.Fatalf("failed to serve: %v", err )
 	}
