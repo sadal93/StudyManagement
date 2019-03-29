@@ -1,0 +1,18 @@
+syntax = "proto3";
+
+package helloworld;
+
+service Sum {
+
+    rpc Add (Input) returns ( Output) {}
+}
+
+
+message Input {
+    int32 first = 1;
+    int32 second = 2;
+}
+
+message Output {
+    int32 result = 1;
+}
