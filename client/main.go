@@ -25,19 +25,15 @@ import (
 	"log"
 	"time"
 
-	"google.golang.org/grpc"
 	pb "Thesis-demo/api"
+	"google.golang.org/grpc"
 )
 
 const (
 	address     = "localhost:50051"
-	defaultName = "world"
 )
 
-
-func getSum( conn *grpc.ClientConn, first int32, second int32){
-
-	c := pb.NewAdditionClient(conn)
+func getSum( c pb.AdditionClient, first int32, second int32){
 
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
 	defer cancel()
@@ -45,14 +41,14 @@ func getSum( conn *grpc.ClientConn, first int32, second int32){
 	if err != nil {
 		log.Fatalf("could not add: %v", err)
 	}
+
 	log.Print("Sum = ", r.Result)
+
 }
 
-func getStreamSum(conn *grpc.ClientConn,  begin int32, end int32)  {
+func getStreamSum(c pb.AdditionClient,  begin int32, end int32)  {
 
-	d := pb.NewAdditionClient(conn)
-
-	stream, err := d.MultipleSum(context.Background(), &pb.Range{Begin: begin, End: end})
+	stream, err := c.MultipleSum(context.Background(), &pb.Range{Begin: begin, End: end})
 	if err != nil {
 		log.Fatalf("Error on Add: %v", err)
 	}
@@ -62,7 +58,7 @@ func getStreamSum(conn *grpc.ClientConn,  begin int32, end int32)  {
 			break
 		}
 		if err != nil {
-			log.Fatalf("%v.Add(_) = _, %v", d, err)
+			log.Fatalf("%v.Add(_) = _, %v", c, err)
 		}
 		log.Print("Sum: ", sum)
 	}
@@ -76,8 +72,10 @@ func main() {
 	}
 	defer conn.Close()
 
-	getSum(conn, 2, 3)
-	getStreamSum(conn, 1, 7)
+	c := pb.NewAdditionClient(conn)
+
+	getSum(c, 2, 4)
+	getStreamSum(c, 1, 7)
 
 
 
