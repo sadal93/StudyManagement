@@ -21,6 +21,7 @@ package main
 
 import (
 	"context"
+	"fmt"
 	"io"
 	"log"
 	"time"
@@ -32,6 +33,47 @@ import (
 const (
 	address     = "localhost:50051"
 )
+
+func createUser( c pb.GetUserClient, user pb.Attributes){
+
+	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
+	defer cancel()
+	r, err := c.User(ctx, &pb.Attributes{Name: user.Name, Age: user.Age, Sick: user.Sick, Weight: user.Weight})
+	if err != nil {
+		log.Fatalf("could not insert: %v", err)
+	}
+
+	log.Print("User = ", r.Name)
+
+}
+
+func triggerCheck( c pb.CheckClient, user pb.Attributes){
+
+	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
+	defer cancel()
+	fmt.Print("Hello")
+	r, err := c.CheckTrigger(ctx, &pb.Attributes{Name: user.Name, Age: user.Age, Sick: user.Sick, Weight: user.Weight})
+	fmt.Print("World")
+	if err != nil {
+		log.Fatalf("Error Occured: %v", err)
+	}
+
+	log.Print("Action = ", r.Action)
+
+}
+
+func createRule( c pb.CheckClient, rule pb.Rule){
+
+	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
+	defer cancel()
+	r, err := c.Trigger(ctx, &pb.Rule{Condition: rule.Condition, Action: rule.Action})
+	if err != nil {
+		log.Fatalf("could not insert: %v", err)
+	}
+
+	log.Print("Rule = ", r.Condition)
+
+}
 
 func getSum( c pb.AdditionClient, first int32, second int32){
 
@@ -72,10 +114,29 @@ func main() {
 	}
 	defer conn.Close()
 
-	c := pb.NewAdditionClient(conn)
+	//c := pb.NewAdditionClient(conn)
+	d := pb.NewCheckClient(conn)
+	//e := pb.NewGetUserClient(conn)
 
-	getSum(c, 2, 4)
-	getStreamSum(c, 1, 7)
+	//rules := []string{"age=20", "sick=false", "weight=60"}
+	//action := "survey1"
+
+	//rule := pb.Rule{Condition: rules, Action: action}
+
+	name := "John"
+	var age int32 = 26
+	sick := "yes"
+	var weight int32 = 77
+
+	user := pb.Attributes{Name: name, Age: age, Sick: sick, Weight: weight}
+
+	//createUser(e, user)
+
+	triggerCheck(d, user)
+
+	//createRule(d, rule)
+	//getSum(c, 2, 4)
+	//getStreamSum(c, 1, 7)
 
 
 

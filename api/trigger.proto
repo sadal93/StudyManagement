@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+package api;
+
+import "user.proto";
+
+service Check {
+    rpc Trigger (Rule) returns (Rule) {}
+
+    rpc CheckTrigger (Attributes) returns (Rule) {}
+}
+
+
+message Rule {
+    repeated string condition = 1;
+    string action = 2;
+}
