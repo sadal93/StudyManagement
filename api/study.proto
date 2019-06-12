@@ -1,0 +1,27 @@
+syntax = "proto3";
+
+package api;
+
+message StudyMetaData {
+    string studyID = 1;
+    string name = 2;
+    string description = 3;
+    int64 startDate = 4;
+    string status = 5;
+    repeated string users = 6;
+}
+
+message StudyUsers {
+    repeated string users = 1;
+}
+
+message UserAssignment {
+    string studyID = 1;
+    string userID = 2;
+}
+
+service Study {
+    rpc GetUsers (StudyMetaData) returns (StudyUsers);
+    rpc CreateStudy (StudyMetaData) returns (StudyMetaData);
+    rpc AssignUserToStudy (UserAssignment) returns (StudyMetaData);
+}

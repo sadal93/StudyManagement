@@ -21,8 +21,6 @@ package main
 
 import (
 	"context"
-	"fmt"
-	"io"
 	"log"
 	"time"
 
@@ -34,26 +32,50 @@ const (
 	address     = "localhost:50051"
 )
 
-func createUser( c pb.GetUserClient, user pb.Attributes){
+func createUser( c pb.UserClient, user pb.UserMetaData){
 
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
 	defer cancel()
-	r, err := c.User(ctx, &pb.Attributes{Name: user.Name, Age: user.Age, Sick: user.Sick, Weight: user.Weight})
+	r, err := c.CreateUser(ctx, &pb.UserMetaData{UserID: user.UserID, TimeLastAssigned: user.TimeLastAssigned, TimeToSend: user.TimeToSend, Role: user.Role})
 	if err != nil {
 		log.Fatalf("could not insert: %v", err)
 	}
 
-	log.Print("User = ", r.Name)
+	log.Print("User = ", r.UserID)
 
 }
 
-func triggerCheck( c pb.CheckClient, user pb.Attributes){
+func assignUserToStudy(c pb.StudyClient, studyUser pb.UserAssignment)  {
+	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
+	defer cancel()
+	r, err := c.AssignUserToStudy(ctx, &pb.UserAssignment{StudyID: studyUser.StudyID, UserID: studyUser.UserID })
+	if err != nil {
+		log.Fatalf("could not assign: %v", err)
+	}
+
+	log.Print("User = ", r.Users)
+	}
+
+func createStudy( c pb.StudyClient, study pb.StudyMetaData){
 
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
 	defer cancel()
-	fmt.Print("Hello")
-	r, err := c.CheckTrigger(ctx, &pb.Attributes{Name: user.Name, Age: user.Age, Sick: user.Sick, Weight: user.Weight})
-	fmt.Print("World")
+	r, err := c.CreateStudy(ctx, &pb.StudyMetaData{StudyID: study.StudyID, Name: study.Name, Description: study.Description, StartDate: study.StartDate, Status: study.Status, Users: study.Users})
+	if err != nil {
+		log.Fatalf("could not insert: %v", err)
+	}
+
+	log.Print("Study = ", r.StudyID)
+
+}
+
+func triggerCheck( c pb.CheckClient, user pb.UserMetaData){
+
+	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
+	defer cancel()
+	//fmt.Print("Hello")
+	r, err := c.CheckTrigger(ctx, &pb.UserMetaData{UserID: user.UserID, TimeLastAssigned: user.TimeLastAssigned, TimeToSend: user.TimeToSend, Role: user.Role})
+	//fmt.Print("World")
 	if err != nil {
 		log.Fatalf("Error Occured: %v", err)
 	}
@@ -75,7 +97,7 @@ func createRule( c pb.CheckClient, rule pb.Rule){
 
 }
 
-func getSum( c pb.AdditionClient, first int32, second int32){
+/*func getSum( c pb.AdditionClient, first int32, second int32){
 
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
 	defer cancel()
@@ -104,7 +126,7 @@ func getStreamSum(c pb.AdditionClient,  begin int32, end int32)  {
 		}
 		log.Print("Sum: ", sum)
 	}
-}
+}*/
 
 func main() {
 	// Set up a connection to the server.
@@ -115,25 +137,43 @@ func main() {
 	defer conn.Close()
 
 	//c := pb.NewAdditionClient(conn)
-	d := pb.NewCheckClient(conn)
-	//e := pb.NewGetUserClient(conn)
-
+	//d := pb.NewCheckClient(conn)
+	//e := pb.NewUserClient(conn)
+	f := pb.NewStudyClient(conn)
 	//rules := []string{"age=20", "sick=false", "weight=60"}
 	//action := "survey1"
 
 	//rule := pb.Rule{Condition: rules, Action: action}
 
-	name := "John"
-	var age int32 = 26
-	sick := "yes"
-	var weight int32 = 77
+	/*userID := "1"
+	var timeLastAssigned int64 = 26
+	var timeToSend int64 = 7000
+	role := "participant"
 
-	user := pb.Attributes{Name: name, Age: age, Sick: sick, Weight: weight}
+	user := pb.UserMetaData{UserID: userID, TimeLastAssigned: timeLastAssigned, TimeToSend:timeToSend, Role: role}*/
+
+	/*studyID := "1"
+	name:= "Flu Study"
+	description := "Study about flu"
+	var startDate int64 = time.Now().UnixNano() / 1000000
+	status := "Active"
+	users := []string{""}
+
+	study := pb.StudyMetaData{StudyID: studyID, Name: name, Description: description, StartDate: startDate, Status: status, Users: users}
+	createStudy(f, study)*/
+
+	userID := "1"
+	studyID := "1"
+	userAssignment := pb.UserAssignment{StudyID: studyID, UserID: userID}
+
+	assignUserToStudy(f, userAssignment)
 
 	//createUser(e, user)
-
-	triggerCheck(d, user)
-
+	//for {
+		//triggerCheck(d, user)
+	//	time.Sleep(time.Second * 10)
+	//}
+	//createUser(e, user)
 	//createRule(d, rule)
 	//getSum(c, 2, 4)
 	//getStreamSum(c, 1, 7)

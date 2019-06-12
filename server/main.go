@@ -22,19 +22,15 @@
 package main
 
 import (
-	"fmt"
-	"reflect"
+	pb "Thesis-demo/api"
 	"context"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
+	"google.golang.org/grpc"
 	"log"
 	"net"
-	"strconv"
-	"strings"
 
-	pb "Thesis-demo/api"
-	"google.golang.org/grpc"
 )
 
 const (
@@ -45,7 +41,6 @@ var clientOptions  = options.Client().ApplyURI("mongodb://localhost:27017")
 var client, err = mongo.Connect(context.TODO(), clientOptions)
 //var collection = client.Database("test").Collection("additions")
 var triggerCollection = client.Database("test").Collection("triggers")
-var userCollection = client.Database("test").Collection("users")
 //var results []*Addition
 var results []*Check
 
@@ -62,12 +57,6 @@ type Check struct {
 	Action string
 }
 
-type User struct {
-	name string
-	age int32
-	sick string
-	weight int32
-}
 
 func contains(condtions []bool, search bool) bool {
 	for _, value := range condtions {
@@ -110,14 +99,7 @@ func createTriggerDocument(doc Check) {
 	log.Print(insertResult)
 }
 
-func createUserDocument(doc User) {
-	insertResult, err := userCollection.InsertOne(context.TODO(), doc)
-	if err != nil {
-		log.Fatal(err)
-	}
 
-	log.Print(insertResult)
-}
 
 func getAllTriggers() []*Check{
 	if err != nil{
@@ -141,14 +123,6 @@ func getAllTriggers() []*Check{
 	return results
 }
 
-func (s *server)  User(ctx context.Context, user *pb.Attributes) (*pb.Attributes, error) {
-
-	userDoc:= User{user.Name, user.Age, user.Sick, user.Weight}
-	createUserDocument(userDoc)
-
-	log.Printf("User Created: %v", user.Name)
-	return &pb.Attributes{Name: user.Name, Age: user.Age, Sick: user.Sick, Weight: user.Weight}, nil
-}
 
 func (s *server)  Trigger(ctx context.Context, rule *pb.Rule) (*pb.Rule, error) {
 
@@ -159,7 +133,7 @@ func (s *server)  Trigger(ctx context.Context, rule *pb.Rule) (*pb.Rule, error) 
 	return &pb.Rule{Condition: trigger.Condition, Action: trigger.Action}, nil
 }
 
-func (s *server)  CheckTrigger(ctx context.Context, user *pb.Attributes) (*pb.Rule, error) {
+/*func (s *server)  CheckTrigger(ctx context.Context, user *pb.Attributes) (*pb.Rule, error) {
 	documents := getAllTriggers()
 	fmt.Println("USER: " , user)
 	var action string
@@ -274,7 +248,7 @@ func (s *server)  CheckTrigger(ctx context.Context, user *pb.Attributes) (*pb.Ru
 
 
 	return &pb.Rule{ Action: action}, nil
-}
+}*/
 
 /*func (s *server) Add(ctx context.Context, in *pb.Input) (*pb.Output, error) {
 	log.Printf("Received First: %v", in.First)
@@ -320,8 +294,9 @@ func main() {
 
 	s := grpc.NewServer()
 	//pb.RegisterAdditionServer(s, &server{})
-	pb.RegisterCheckServer(s, &server{})
-	pb.RegisterGetUserServer(s, &server{})
+	//pb.RegisterCheckServer(s, &server{})
+	pb.RegisterUserServer(s, &server{})
+	pb.RegisterStudyServer(s, &server{})
 	if err := s.Serve(lis); err != nil {
 		log.Fatalf("failed to serve: %v", err )
 	}

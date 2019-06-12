@@ -78,17 +78,17 @@ func init() {
 func init() { proto.RegisterFile("trigger.proto", fileDescriptor_8c31e6d8b4368946) }
 
 var fileDescriptor_8c31e6d8b4368946 = []byte{
-	// 154 bytes of a gzipped FileDescriptorProto
+	// 156 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xe2, 0xe2, 0x2d, 0x29, 0xca, 0x4c,
 	0x4f, 0x4f, 0x2d, 0xd2, 0x2b, 0x28, 0xca, 0x2f, 0xc9, 0x17, 0x62, 0x4e, 0x2c, 0xc8, 0x94, 0xe2,
 	0x2a, 0x2d, 0x86, 0x09, 0x28, 0xd9, 0x70, 0xb1, 0x04, 0x95, 0xe6, 0xa4, 0x0a, 0xc9, 0x70, 0x71,
 	0x26, 0xe7, 0xe7, 0xa5, 0x64, 0x96, 0x64, 0xe6, 0xe7, 0x49, 0x30, 0x2a, 0x30, 0x6b, 0x70, 0x06,
 	0x21, 0x04, 0x84, 0xc4, 0xb8, 0xd8, 0x12, 0x93, 0xc1, 0x52, 0x4c, 0x0a, 0x8c, 0x1a, 0x9c, 0x41,
-	0x50, 0x9e, 0x51, 0x04, 0x17, 0xab, 0x73, 0x46, 0x6a, 0x72, 0xb6, 0x90, 0x22, 0x17, 0x7b, 0x08,
+	0x50, 0x9e, 0x51, 0x14, 0x17, 0xab, 0x73, 0x46, 0x6a, 0x72, 0xb6, 0x90, 0x22, 0x17, 0x7b, 0x08,
 	0xc4, 0x22, 0x21, 0x4e, 0xbd, 0xc4, 0x82, 0x4c, 0x3d, 0x90, 0xa1, 0x52, 0x08, 0xa6, 0x12, 0x83,
-	0x90, 0x0e, 0x17, 0x0f, 0x58, 0x2d, 0x4c, 0x1d, 0x3f, 0x58, 0xd2, 0xb1, 0xa4, 0xa4, 0x28, 0x33,
-	0xa9, 0xb4, 0x24, 0xb5, 0x18, 0x45, 0x75, 0x12, 0x1b, 0xd8, 0x79, 0xc6, 0x80, 0x00, 0x00, 0x00,
-	0xff, 0xff, 0x07, 0x90, 0x7a, 0xf9, 0xc0, 0x00, 0x00, 0x00,
+	0x90, 0x1e, 0x17, 0x0f, 0x58, 0x2d, 0x4c, 0x9d, 0x20, 0x58, 0x32, 0xb4, 0x38, 0xb5, 0xc8, 0x37,
+	0xb5, 0x24, 0xd1, 0x25, 0xb1, 0x24, 0x11, 0x45, 0x7d, 0x12, 0x1b, 0xd8, 0x81, 0xc6, 0x80, 0x00,
+	0x00, 0x00, 0xff, 0xff, 0xb4, 0x91, 0x34, 0x4a, 0xc2, 0x00, 0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -104,7 +104,7 @@ const _ = grpc.SupportPackageIsVersion4
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://godoc.org/google.golang.org/grpc#ClientConn.NewStream.
 type CheckClient interface {
 	Trigger(ctx context.Context, in *Rule, opts ...grpc.CallOption) (*Rule, error)
-	CheckTrigger(ctx context.Context, in *Attributes, opts ...grpc.CallOption) (*Rule, error)
+	CheckTrigger(ctx context.Context, in *UserMetaData, opts ...grpc.CallOption) (*Rule, error)
 }
 
 type checkClient struct {
@@ -124,7 +124,7 @@ func (c *checkClient) Trigger(ctx context.Context, in *Rule, opts ...grpc.CallOp
 	return out, nil
 }
 
-func (c *checkClient) CheckTrigger(ctx context.Context, in *Attributes, opts ...grpc.CallOption) (*Rule, error) {
+func (c *checkClient) CheckTrigger(ctx context.Context, in *UserMetaData, opts ...grpc.CallOption) (*Rule, error) {
 	out := new(Rule)
 	err := c.cc.Invoke(ctx, "/api.Check/CheckTrigger", in, out, opts...)
 	if err != nil {
@@ -136,7 +136,7 @@ func (c *checkClient) CheckTrigger(ctx context.Context, in *Attributes, opts ...
 // CheckServer is the server API for Check service.
 type CheckServer interface {
 	Trigger(context.Context, *Rule) (*Rule, error)
-	CheckTrigger(context.Context, *Attributes) (*Rule, error)
+	CheckTrigger(context.Context, *UserMetaData) (*Rule, error)
 }
 
 // UnimplementedCheckServer can be embedded to have forward compatible implementations.
@@ -146,7 +146,7 @@ type UnimplementedCheckServer struct {
 func (*UnimplementedCheckServer) Trigger(ctx context.Context, req *Rule) (*Rule, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Trigger not implemented")
 }
-func (*UnimplementedCheckServer) CheckTrigger(ctx context.Context, req *Attributes) (*Rule, error) {
+func (*UnimplementedCheckServer) CheckTrigger(ctx context.Context, req *UserMetaData) (*Rule, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CheckTrigger not implemented")
 }
 
@@ -173,7 +173,7 @@ func _Check_Trigger_Handler(srv interface{}, ctx context.Context, dec func(inter
 }
 
 func _Check_CheckTrigger_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(Attributes)
+	in := new(UserMetaData)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -185,7 +185,7 @@ func _Check_CheckTrigger_Handler(srv interface{}, ctx context.Context, dec func(
 		FullMethod: "/api.Check/CheckTrigger",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(CheckServer).CheckTrigger(ctx, req.(*Attributes))
+		return srv.(CheckServer).CheckTrigger(ctx, req.(*UserMetaData))
 	}
 	return interceptor(ctx, in, info, handler)
 }

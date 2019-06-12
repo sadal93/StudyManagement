@@ -2,14 +2,14 @@ syntax = "proto3";
 
 package api;
 
-service GetUser {
-    rpc User (Attributes) returns (Attributes) {}
+service User {
+    rpc CreateUser (UserMetaData) returns (UserMetaData) {}
 }
 
 
-message Attributes {
-    string name = 1;
-    int32 age = 2;
-    string sick = 3;
-    int32 weight = 4;
+message UserMetaData {
+    string userID = 1;
+    int64 timeLastAssigned = 2;
+    int64 timeToSend = 3;
+    string role = 4;
 }
