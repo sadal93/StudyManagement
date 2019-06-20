@@ -25,7 +25,7 @@ var _ = math.Inf
 const _ = proto.ProtoPackageIsVersion3 // please upgrade the proto package
 
 type StudyMetaData struct {
-	StudyID              string   `protobuf:"bytes,1,opt,name=studyID,proto3" json:"studyID,omitempty"`
+	Id                   string   `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
 	Name                 string   `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
 	Description          string   `protobuf:"bytes,3,opt,name=description,proto3" json:"description,omitempty"`
 	StartDate            int64    `protobuf:"varint,4,opt,name=startDate,proto3" json:"startDate,omitempty"`
@@ -61,9 +61,9 @@ func (m *StudyMetaData) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_StudyMetaData proto.InternalMessageInfo
 
-func (m *StudyMetaData) GetStudyID() string {
+func (m *StudyMetaData) GetId() string {
 	if m != nil {
-		return m.StudyID
+		return m.Id
 	}
 	return ""
 }
@@ -142,6 +142,115 @@ func (m *StudyUsers) GetUsers() []string {
 	return nil
 }
 
+type Empty struct {
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *Empty) Reset()         { *m = Empty{} }
+func (m *Empty) String() string { return proto.CompactTextString(m) }
+func (*Empty) ProtoMessage()    {}
+func (*Empty) Descriptor() ([]byte, []int) {
+	return fileDescriptor_b59e246e4c4c09f0, []int{2}
+}
+
+func (m *Empty) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_Empty.Unmarshal(m, b)
+}
+func (m *Empty) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_Empty.Marshal(b, m, deterministic)
+}
+func (m *Empty) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_Empty.Merge(m, src)
+}
+func (m *Empty) XXX_Size() int {
+	return xxx_messageInfo_Empty.Size(m)
+}
+func (m *Empty) XXX_DiscardUnknown() {
+	xxx_messageInfo_Empty.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_Empty proto.InternalMessageInfo
+
+type StudyArray struct {
+	Studies              []*StudyMetaData `protobuf:"bytes,1,rep,name=studies,proto3" json:"studies,omitempty"`
+	XXX_NoUnkeyedLiteral struct{}         `json:"-"`
+	XXX_unrecognized     []byte           `json:"-"`
+	XXX_sizecache        int32            `json:"-"`
+}
+
+func (m *StudyArray) Reset()         { *m = StudyArray{} }
+func (m *StudyArray) String() string { return proto.CompactTextString(m) }
+func (*StudyArray) ProtoMessage()    {}
+func (*StudyArray) Descriptor() ([]byte, []int) {
+	return fileDescriptor_b59e246e4c4c09f0, []int{3}
+}
+
+func (m *StudyArray) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_StudyArray.Unmarshal(m, b)
+}
+func (m *StudyArray) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_StudyArray.Marshal(b, m, deterministic)
+}
+func (m *StudyArray) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_StudyArray.Merge(m, src)
+}
+func (m *StudyArray) XXX_Size() int {
+	return xxx_messageInfo_StudyArray.Size(m)
+}
+func (m *StudyArray) XXX_DiscardUnknown() {
+	xxx_messageInfo_StudyArray.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_StudyArray proto.InternalMessageInfo
+
+func (m *StudyArray) GetStudies() []*StudyMetaData {
+	if m != nil {
+		return m.Studies
+	}
+	return nil
+}
+
+type StudyID struct {
+	StudyID              string   `protobuf:"bytes,1,opt,name=studyID,proto3" json:"studyID,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *StudyID) Reset()         { *m = StudyID{} }
+func (m *StudyID) String() string { return proto.CompactTextString(m) }
+func (*StudyID) ProtoMessage()    {}
+func (*StudyID) Descriptor() ([]byte, []int) {
+	return fileDescriptor_b59e246e4c4c09f0, []int{4}
+}
+
+func (m *StudyID) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_StudyID.Unmarshal(m, b)
+}
+func (m *StudyID) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_StudyID.Marshal(b, m, deterministic)
+}
+func (m *StudyID) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_StudyID.Merge(m, src)
+}
+func (m *StudyID) XXX_Size() int {
+	return xxx_messageInfo_StudyID.Size(m)
+}
+func (m *StudyID) XXX_DiscardUnknown() {
+	xxx_messageInfo_StudyID.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_StudyID proto.InternalMessageInfo
+
+func (m *StudyID) GetStudyID() string {
+	if m != nil {
+		return m.StudyID
+	}
+	return ""
+}
+
 type UserAssignment struct {
 	StudyID              string   `protobuf:"bytes,1,opt,name=studyID,proto3" json:"studyID,omitempty"`
 	UserID               string   `protobuf:"bytes,2,opt,name=userID,proto3" json:"userID,omitempty"`
@@ -154,7 +263,7 @@ func (m *UserAssignment) Reset()         { *m = UserAssignment{} }
 func (m *UserAssignment) String() string { return proto.CompactTextString(m) }
 func (*UserAssignment) ProtoMessage()    {}
 func (*UserAssignment) Descriptor() ([]byte, []int) {
-	return fileDescriptor_b59e246e4c4c09f0, []int{2}
+	return fileDescriptor_b59e246e4c4c09f0, []int{5}
 }
 
 func (m *UserAssignment) XXX_Unmarshal(b []byte) error {
@@ -192,30 +301,37 @@ func (m *UserAssignment) GetUserID() string {
 func init() {
 	proto.RegisterType((*StudyMetaData)(nil), "api.StudyMetaData")
 	proto.RegisterType((*StudyUsers)(nil), "api.StudyUsers")
+	proto.RegisterType((*Empty)(nil), "api.Empty")
+	proto.RegisterType((*StudyArray)(nil), "api.StudyArray")
+	proto.RegisterType((*StudyID)(nil), "api.StudyID")
 	proto.RegisterType((*UserAssignment)(nil), "api.UserAssignment")
 }
 
 func init() { proto.RegisterFile("study.proto", fileDescriptor_b59e246e4c4c09f0) }
 
 var fileDescriptor_b59e246e4c4c09f0 = []byte{
-	// 268 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x7c, 0x91, 0xc1, 0x4a, 0xc4, 0x30,
-	0x10, 0x86, 0x89, 0xdd, 0x56, 0x3b, 0x45, 0xc5, 0x51, 0x96, 0x20, 0x1e, 0x4a, 0x4f, 0x3d, 0x55,
-	0x50, 0xbc, 0x79, 0x51, 0x0b, 0xb2, 0x07, 0x2f, 0x55, 0x1f, 0x60, 0x74, 0x83, 0xe4, 0xb0, 0x6d,
-	0x49, 0xa6, 0x07, 0x9f, 0x49, 0x7c, 0x47, 0x49, 0x52, 0xe9, 0x2e, 0x94, 0xbd, 0xe5, 0xff, 0xe7,
-	0xff, 0x32, 0x33, 0x09, 0x64, 0x96, 0x87, 0xf5, 0x77, 0xd5, 0x9b, 0x8e, 0x3b, 0x8c, 0xa8, 0xd7,
-	0xc5, 0x8f, 0x80, 0xe3, 0x57, 0x67, 0xbe, 0x28, 0xa6, 0x9a, 0x98, 0x50, 0xc2, 0xa1, 0x4f, 0xad,
-	0x6a, 0x29, 0x72, 0x51, 0xa6, 0xcd, 0xbf, 0x44, 0x84, 0x45, 0x4b, 0x1b, 0x25, 0x0f, 0xbc, 0xed,
-	0xcf, 0x98, 0x43, 0xb6, 0x56, 0xf6, 0xd3, 0xe8, 0x9e, 0x75, 0xd7, 0xca, 0xc8, 0x97, 0xb6, 0x2d,
-	0xbc, 0x82, 0xd4, 0x32, 0x19, 0xae, 0x89, 0x95, 0x5c, 0xe4, 0xa2, 0x8c, 0x9a, 0xc9, 0xc0, 0x25,
-	0x24, 0x96, 0x89, 0x07, 0x2b, 0x63, 0x8f, 0x8e, 0x0a, 0x2f, 0x20, 0x1e, 0xac, 0x32, 0x56, 0x26,
-	0x79, 0x54, 0xa6, 0x4d, 0x10, 0x45, 0x01, 0xe0, 0x87, 0x7d, 0x77, 0x6a, 0xca, 0x88, 0xed, 0xcc,
-	0x23, 0x9c, 0xb8, 0xf2, 0x83, 0xb5, 0xfa, 0xab, 0xdd, 0xa8, 0x96, 0xf7, 0x6c, 0xb4, 0x84, 0xc4,
-	0x41, 0xab, 0x7a, 0xdc, 0x69, 0x54, 0x37, 0xbf, 0x02, 0x62, 0xdf, 0x08, 0xaf, 0xe1, 0xe8, 0x59,
-	0x71, 0xe8, 0x87, 0x15, 0xf5, 0xba, 0xda, 0x79, 0xad, 0xcb, 0xd3, 0xc9, 0x0b, 0xa1, 0x3b, 0xc8,
-	0x9e, 0x8c, 0x22, 0x56, 0x81, 0x9f, 0x63, 0x66, 0x3c, 0xbc, 0x87, 0xb3, 0x30, 0xb1, 0xbb, 0xe5,
-	0xad, 0x0b, 0xf0, 0xb9, 0x0f, 0xee, 0x6e, 0x33, 0x47, 0x7f, 0x24, 0xfe, 0x47, 0x6f, 0xff, 0x02,
-	0x00, 0x00, 0xff, 0xff, 0xbe, 0xb8, 0x90, 0x32, 0xe0, 0x01, 0x00, 0x00,
+	// 334 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x74, 0x52, 0xc1, 0x4a, 0xf3, 0x40,
+	0x18, 0x24, 0x4d, 0x93, 0xfe, 0xfd, 0xf2, 0x5b, 0xf1, 0x53, 0x64, 0x29, 0x1e, 0x42, 0x44, 0xa8,
+	0x20, 0x3d, 0x54, 0xbc, 0x88, 0x97, 0x6a, 0xa4, 0xe4, 0xe0, 0x25, 0xea, 0x03, 0xac, 0x66, 0x91,
+	0x85, 0x36, 0x09, 0xbb, 0x5f, 0x0f, 0x79, 0x1c, 0x5f, 0xc8, 0x67, 0x92, 0xdd, 0x4d, 0x49, 0x0b,
+	0xf1, 0x96, 0x99, 0x6f, 0x26, 0x99, 0x19, 0x02, 0x91, 0xa6, 0x6d, 0xd1, 0xcc, 0x6b, 0x55, 0x51,
+	0x85, 0x3e, 0xaf, 0x65, 0xf2, 0xed, 0xc1, 0xd1, 0xab, 0x21, 0x5f, 0x04, 0xf1, 0x94, 0x13, 0xc7,
+	0x09, 0x0c, 0x64, 0xc1, 0xbc, 0xd8, 0x9b, 0x8d, 0xf3, 0x81, 0x2c, 0x10, 0x61, 0x58, 0xf2, 0x8d,
+	0x60, 0x03, 0xcb, 0xd8, 0x67, 0x8c, 0x21, 0x2a, 0x84, 0xfe, 0x54, 0xb2, 0x26, 0x59, 0x95, 0xcc,
+	0xb7, 0xa7, 0x7d, 0x0a, 0x2f, 0x60, 0xac, 0x89, 0x2b, 0x4a, 0x39, 0x09, 0x36, 0x8c, 0xbd, 0x99,
+	0x9f, 0x77, 0x04, 0x9e, 0x43, 0xa8, 0x89, 0xd3, 0x56, 0xb3, 0xc0, 0x5a, 0x5b, 0x84, 0x67, 0x10,
+	0x6c, 0xb5, 0x50, 0x9a, 0x85, 0xb1, 0x3f, 0x1b, 0xe7, 0x0e, 0x24, 0x09, 0x80, 0x8d, 0xf8, 0x6e,
+	0x50, 0xa7, 0xf1, 0xf6, 0x35, 0x23, 0x08, 0x9e, 0x37, 0x35, 0x35, 0xc9, 0x7d, 0x2b, 0x5e, 0x2a,
+	0xc5, 0x1b, 0xbc, 0x81, 0x91, 0xa9, 0x2c, 0x85, 0x93, 0x47, 0x0b, 0x9c, 0xf3, 0x5a, 0xce, 0x0f,
+	0x1a, 0xe7, 0x3b, 0x49, 0x72, 0x09, 0x23, 0x7b, 0xc9, 0x52, 0x64, 0xce, 0xd8, 0x64, 0x69, 0x3b,
+	0xc5, 0x0e, 0x26, 0x8f, 0x30, 0x31, 0x41, 0x96, 0x5a, 0xcb, 0xaf, 0x72, 0x23, 0x4a, 0xfa, 0x5b,
+	0x6b, 0x7a, 0x9a, 0x78, 0x59, 0xda, 0xae, 0xd7, 0xa2, 0xc5, 0x8f, 0x07, 0x81, 0xfd, 0x12, 0x5e,
+	0xc3, 0xbf, 0x95, 0x20, 0xd7, 0xec, 0x7f, 0x97, 0x2d, 0x4b, 0xa7, 0xc7, 0x1d, 0x72, 0xe7, 0x3b,
+	0x88, 0x9e, 0x94, 0xe0, 0x24, 0x9c, 0xb3, 0xa7, 0xc9, 0xb4, 0x87, 0xc3, 0x07, 0x38, 0x71, 0x59,
+	0xcd, 0x5b, 0xde, 0x2a, 0x67, 0x3e, 0xb5, 0xc2, 0xc3, 0x1e, 0xbd, 0xee, 0x2b, 0x08, 0x57, 0x82,
+	0x96, 0xeb, 0x35, 0x82, 0xbd, 0xda, 0x91, 0xf7, 0xb3, 0xd9, 0x9d, 0x3f, 0x42, 0xfb, 0x4b, 0xdd,
+	0xfe, 0x06, 0x00, 0x00, 0xff, 0xff, 0x17, 0x9c, 0x59, 0xd7, 0x61, 0x02, 0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -230,9 +346,10 @@ const _ = grpc.SupportPackageIsVersion4
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://godoc.org/google.golang.org/grpc#ClientConn.NewStream.
 type StudyClient interface {
-	GetUsers(ctx context.Context, in *StudyMetaData, opts ...grpc.CallOption) (*StudyUsers, error)
+	GetUsers(ctx context.Context, in *StudyID, opts ...grpc.CallOption) (*StudyUsers, error)
 	CreateStudy(ctx context.Context, in *StudyMetaData, opts ...grpc.CallOption) (*StudyMetaData, error)
 	AssignUserToStudy(ctx context.Context, in *UserAssignment, opts ...grpc.CallOption) (*StudyMetaData, error)
+	GetAll(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*StudyArray, error)
 }
 
 type studyClient struct {
@@ -243,7 +360,7 @@ func NewStudyClient(cc *grpc.ClientConn) StudyClient {
 	return &studyClient{cc}
 }
 
-func (c *studyClient) GetUsers(ctx context.Context, in *StudyMetaData, opts ...grpc.CallOption) (*StudyUsers, error) {
+func (c *studyClient) GetUsers(ctx context.Context, in *StudyID, opts ...grpc.CallOption) (*StudyUsers, error) {
 	out := new(StudyUsers)
 	err := c.cc.Invoke(ctx, "/api.Study/GetUsers", in, out, opts...)
 	if err != nil {
@@ -270,18 +387,28 @@ func (c *studyClient) AssignUserToStudy(ctx context.Context, in *UserAssignment,
 	return out, nil
 }
 
+func (c *studyClient) GetAll(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*StudyArray, error) {
+	out := new(StudyArray)
+	err := c.cc.Invoke(ctx, "/api.Study/GetAll", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // StudyServer is the server API for Study service.
 type StudyServer interface {
-	GetUsers(context.Context, *StudyMetaData) (*StudyUsers, error)
+	GetUsers(context.Context, *StudyID) (*StudyUsers, error)
 	CreateStudy(context.Context, *StudyMetaData) (*StudyMetaData, error)
 	AssignUserToStudy(context.Context, *UserAssignment) (*StudyMetaData, error)
+	GetAll(context.Context, *Empty) (*StudyArray, error)
 }
 
 // UnimplementedStudyServer can be embedded to have forward compatible implementations.
 type UnimplementedStudyServer struct {
 }
 
-func (*UnimplementedStudyServer) GetUsers(ctx context.Context, req *StudyMetaData) (*StudyUsers, error) {
+func (*UnimplementedStudyServer) GetUsers(ctx context.Context, req *StudyID) (*StudyUsers, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetUsers not implemented")
 }
 func (*UnimplementedStudyServer) CreateStudy(ctx context.Context, req *StudyMetaData) (*StudyMetaData, error) {
@@ -290,13 +417,16 @@ func (*UnimplementedStudyServer) CreateStudy(ctx context.Context, req *StudyMeta
 func (*UnimplementedStudyServer) AssignUserToStudy(ctx context.Context, req *UserAssignment) (*StudyMetaData, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method AssignUserToStudy not implemented")
 }
+func (*UnimplementedStudyServer) GetAll(ctx context.Context, req *Empty) (*StudyArray, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetAll not implemented")
+}
 
 func RegisterStudyServer(s *grpc.Server, srv StudyServer) {
 	s.RegisterService(&_Study_serviceDesc, srv)
 }
 
 func _Study_GetUsers_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(StudyMetaData)
+	in := new(StudyID)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -308,7 +438,7 @@ func _Study_GetUsers_Handler(srv interface{}, ctx context.Context, dec func(inte
 		FullMethod: "/api.Study/GetUsers",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(StudyServer).GetUsers(ctx, req.(*StudyMetaData))
+		return srv.(StudyServer).GetUsers(ctx, req.(*StudyID))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -349,6 +479,24 @@ func _Study_AssignUserToStudy_Handler(srv interface{}, ctx context.Context, dec 
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Study_GetAll_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(Empty)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(StudyServer).GetAll(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/api.Study/GetAll",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(StudyServer).GetAll(ctx, req.(*Empty))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 var _Study_serviceDesc = grpc.ServiceDesc{
 	ServiceName: "api.Study",
 	HandlerType: (*StudyServer)(nil),
@@ -364,6 +512,10 @@ var _Study_serviceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "AssignUserToStudy",
 			Handler:    _Study_AssignUserToStudy_Handler,
+		},
+		{
+			MethodName: "GetAll",
+			Handler:    _Study_GetAll_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

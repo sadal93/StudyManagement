@@ -2,16 +2,31 @@ syntax = "proto3";
 
 package api;
 
-import "user.proto";
+message CreatedTrigger {
+    repeated string condition = 1;
+    repeated Action action = 2;
+    string studyID = 3;
+}
 
-service Check {
-    rpc Trigger (Rule) returns (Rule) {}
-
-    rpc CheckTrigger (UserMetaData) returns (Rule) {}
+message Condition {
+    repeated string condition = 1;
 }
 
 
-message Rule {
-    repeated string condition = 1;
-    string action = 2;
+message Action {
+    string type = 1;
+    string value = 2;
+}
+
+message Attributes {
+    string userID = 1;
+    string name = 2;
+    int32 age = 3;
+    string sick = 4;
+    int32 weight = 5;
+}
+
+service Trigger {
+    rpc CreateTrigger (CreatedTrigger) returns (CreatedTrigger) {}
+    rpc CheckTrigger (Attributes) returns (stream Action) {}
 }

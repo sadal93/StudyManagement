@@ -21,6 +21,7 @@ package main
 
 import (
 	"context"
+	"io"
 	"log"
 	"time"
 
@@ -60,40 +61,70 @@ func createStudy( c pb.StudyClient, study pb.StudyMetaData){
 
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
 	defer cancel()
-	r, err := c.CreateStudy(ctx, &pb.StudyMetaData{StudyID: study.StudyID, Name: study.Name, Description: study.Description, StartDate: study.StartDate, Status: study.Status, Users: study.Users})
+	r, err := c.CreateStudy(ctx, &pb.StudyMetaData{Name: study.Name, Description: study.Description, StartDate: study.StartDate, Status: study.Status, Users: study.Users})
 	if err != nil {
 		log.Fatalf("could not insert: %v", err)
 	}
 
-	log.Print("Study = ", r.StudyID)
+	log.Print("Study = ", r.Name)
 
 }
 
-func triggerCheck( c pb.CheckClient, user pb.UserMetaData){
+func getStudies( c pb.StudyClient){
+	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
+	defer cancel()
+	r, err := c.GetAll(ctx, &pb.Empty{})
+	if err != nil {
+		log.Fatalf("could not insert: %v", err)
+	}
+	log.Print("Studies = ", r)
+}
+
+func getUsers(c pb.StudyClient, studyID pb.StudyID){
 
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
 	defer cancel()
-	//fmt.Print("Hello")
-	r, err := c.CheckTrigger(ctx, &pb.UserMetaData{UserID: user.UserID, TimeLastAssigned: user.TimeLastAssigned, TimeToSend: user.TimeToSend, Role: user.Role})
-	//fmt.Print("World")
+	r, err := c.GetUsers(ctx, &pb.StudyID{StudyID: studyID.StudyID})
+	if err != nil {
+		log.Fatalf("could not retrieve: %v", err)
+	}
+
+	log.Print("Users = ", r.Users)
+
+}
+
+func checkTrigger( c pb.TriggerClient, attributes pb.Attributes){
+
+	stream, err := c.CheckTrigger(context.Background(), &pb.Attributes{Age: attributes.Age, Sick: attributes.Sick, Weight: attributes.Weight})
+
 	if err != nil {
 		log.Fatalf("Error Occured: %v", err)
 	}
 
-	log.Print("Action = ", r.Action)
+	for {
+		strm, err := stream.Recv()
+		if err == io.EOF {
+			break
+		}
+		if err != nil {
+			log.Fatalf("%v.Add(_) = _, %v", c, err)
+		}
+		log.Print("Action: ", strm)
+	}
+
 
 }
 
-func createRule( c pb.CheckClient, rule pb.Rule){
+func createTrigger( c pb.TriggerClient, trigger pb.CreatedTrigger){
 
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
 	defer cancel()
-	r, err := c.Trigger(ctx, &pb.Rule{Condition: rule.Condition, Action: rule.Action})
+	r, err := c.CreateTrigger(ctx, &pb.CreatedTrigger{Condition: trigger.Condition, StudyID: trigger.StudyID, Action: trigger.Action})
 	if err != nil {
 		log.Fatalf("could not insert: %v", err)
 	}
 
-	log.Print("Rule = ", r.Condition)
+	log.Print("Trigger = ", r.Condition)
 
 }
 
@@ -137,10 +168,20 @@ func main() {
 	defer conn.Close()
 
 	//c := pb.NewAdditionClient(conn)
-	//d := pb.NewCheckClient(conn)
+	//d := pb.NewTriggerClient(conn)
 	//e := pb.NewUserClient(conn)
 	f := pb.NewStudyClient(conn)
-	//rules := []string{"age=20", "sick=false", "weight=60"}
+	/*conditions := []string{"age>25", "sick=yes", "weight>50"}
+	action1 := &pb.Action{Type: "survey", Value: "1"}
+	action2:= &pb.Action{Type: "time", Value: "3600000"}
+	var actions []*pb.Action
+	actions = append(actions, action1, action2)
+
+	createdTrigger := pb.CreatedTrigger{Condition: conditions, Action: actions, StudyID: "5d0b6b28678629f9b50baa02"}
+	createTrigger(d, createdTrigger)*/
+
+	/*attributes := pb.Attributes{Age: 26, Sick: "yes", Weight: 70}
+	checkTrigger(d, attributes)*/
 	//action := "survey1"
 
 	//rule := pb.Rule{Condition: rules, Action: action}
@@ -152,21 +193,27 @@ func main() {
 
 	user := pb.UserMetaData{UserID: userID, TimeLastAssigned: timeLastAssigned, TimeToSend:timeToSend, Role: role}*/
 
-	/*studyID := "1"
-	name:= "Flu Study"
-	description := "Study about flu"
+	/*name:= "Headache Study"
+	description := "Study about headaches"
 	var startDate int64 = time.Now().UnixNano() / 1000000
 	status := "Active"
 	users := []string{""}
 
-	study := pb.StudyMetaData{StudyID: studyID, Name: name, Description: description, StartDate: startDate, Status: status, Users: users}
+	study := pb.StudyMetaData{Name: name, Description: description, StartDate: startDate, Status: status, Users: users}
 	createStudy(f, study)*/
 
-	userID := "1"
-	studyID := "1"
+	/*userID := "1"
+	studyID := "5d0b6b28678629f9b50baa02"
 	userAssignment := pb.UserAssignment{StudyID: studyID, UserID: userID}
 
-	assignUserToStudy(f, userAssignment)
+	assignUserToStudy(f, userAssignment)*/
+
+	/*studyID := "5d0b6b28678629f9b50baa02"
+	study := pb.StudyID{StudyID: studyID}
+
+	getUsers(f, study)*/
+
+	getStudies(f)
 
 	//createUser(e, user)
 	//for {

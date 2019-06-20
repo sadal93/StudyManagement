@@ -1,0 +1,13 @@
+syntax = "proto3";
+
+package api;
+
+message SurveyData{
+    int64 surveyID = 1;
+    string type = 2;
+    string description = 3;
+}
+
+service Survey{
+    rpc CreateSurvey (SurveyData) returns (SurveyData);
+}
