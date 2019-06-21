@@ -37,4 +37,7 @@ service Study {
     rpc CreateStudy (StudyMetaData) returns (StudyMetaData);
     rpc AssignUserToStudy (UserAssignment) returns (StudyMetaData);
     rpc GetAll (Empty) returns (StudyArray);
+    rpc UpdateStudy (StudyMetaData) returns (StudyMetaData);
+    rpc DeleteStudy (StudyID) returns (Empty);
+    rpc GetStudy (StudyID) returns (StudyMetaData);
 }

@@ -80,6 +80,28 @@ func getStudies( c pb.StudyClient){
 	log.Print("Studies = ", r)
 }
 
+func updateStudy(c pb.StudyClient, study pb.StudyMetaData){
+	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
+	defer cancel()
+	r, err := c.UpdateStudy(ctx, &pb.StudyMetaData{Id: study.Id, Name: study.Name, Description: study.Description, Status: study.Status})
+	if err != nil {
+		log.Fatalf("could not update: %v", err)
+	}
+
+	log.Print("Study = ", r.Name)
+}
+
+func deleteStudy(c pb.StudyClient, study pb.StudyID){
+	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
+	defer cancel()
+	r, err := c.DeleteStudy(ctx, &pb.StudyID{StudyID: study.StudyID})
+	if err != nil {
+		log.Fatalf("could not delete: %v", err)
+	}
+
+	log.Print("Study = ", r)
+}
+
 func getUsers(c pb.StudyClient, studyID pb.StudyID){
 
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
@@ -90,6 +112,19 @@ func getUsers(c pb.StudyClient, studyID pb.StudyID){
 	}
 
 	log.Print("Users = ", r.Users)
+
+}
+
+func getStudy(c pb.StudyClient, studyID pb.StudyID){
+
+	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
+	defer cancel()
+	r, err := c.GetStudy(ctx, &pb.StudyID{StudyID: studyID.StudyID})
+	if err != nil {
+		log.Fatalf("could not retrieve: %v", err)
+	}
+
+	log.Print("Study = ", r)
 
 }
 
@@ -193,14 +228,20 @@ func main() {
 
 	user := pb.UserMetaData{UserID: userID, TimeLastAssigned: timeLastAssigned, TimeToSend:timeToSend, Role: role}*/
 
+	/*id := "5d0c381c58103882ca0fdda4"
+	studyToDelete := pb.StudyID{StudyID: id}
+	deleteStudy(f, studyToDelete)*/
+	//id := "5d0b6b28678629f9b50baa02"
 	/*name:= "Headache Study"
-	description := "Study about headaches"
-	var startDate int64 = time.Now().UnixNano() / 1000000
+	description := "Study about Headache"
+	//var startDate int64 = time.Now().UnixNano() / 1000000
 	status := "Active"
-	users := []string{""}
+	//users := []string{""}
 
-	study := pb.StudyMetaData{Name: name, Description: description, StartDate: startDate, Status: status, Users: users}
-	createStudy(f, study)*/
+	study1 := pb.StudyMetaData{Name: name, Description: description, Status: status}
+	createStudy(f, study1)*/
+	//updateStudy(f, study1)
+
 
 	/*userID := "1"
 	studyID := "5d0b6b28678629f9b50baa02"
@@ -208,12 +249,14 @@ func main() {
 
 	assignUserToStudy(f, userAssignment)*/
 
-	/*studyID := "5d0b6b28678629f9b50baa02"
-	study := pb.StudyID{StudyID: studyID}
+	studyID := "5d0b6b28678629f9b50baa02"
+	study2 := pb.StudyID{StudyID: studyID}
 
-	getUsers(f, study)*/
+	getStudy(f, study2)
 
-	getStudies(f)
+	getUsers(f, study2)
+
+	//getStudies(f)
 
 	//createUser(e, user)
 	//for {

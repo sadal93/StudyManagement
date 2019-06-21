@@ -8,6 +8,7 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 	"labix.org/v2/mgo/bson"
 	"log"
+	"time"
 )
 
 var studyCollection = client.Database("test").Collection("study")
@@ -54,7 +55,7 @@ func getAllStudies() []*Study{
 
 func (s *server)  CreateStudy(ctx context.Context, study *pb.StudyMetaData) (*pb.StudyMetaData, error) {
 
-	studyDoc:= Study{primitive.NewObjectID(),study.Name, study.Description, study.StartDate, study.Status,study.Users}
+	studyDoc:= Study{primitive.NewObjectID(),study.Name, study.Description, time.Now().UnixNano() / 1000000, study.Status,study.Users}
 	createStudyDocument(studyDoc)
 
 	log.Printf("Study Created: %v", study.Name)
@@ -64,8 +65,9 @@ func (s *server)  CreateStudy(ctx context.Context, study *pb.StudyMetaData) (*pb
 func (s *server)  GetUsers(ctx context.Context, study *pb.StudyID) (*pb.StudyUsers, error) {
 
 	var result Study
-	objectIDS, err := primitive.ObjectIDFromHex(study.StudyID)
-	filter := bson.M{"_id": objectIDS }
+	objectID, err := primitive.ObjectIDFromHex(study.StudyID)
+
+	filter := bson.M{"_id": objectID}
 
 	err = studyCollection.FindOne(context.TODO(), filter).Decode(&result)
 	if err != nil {
@@ -79,8 +81,8 @@ func (s *server)  GetUsers(ctx context.Context, study *pb.StudyID) (*pb.StudyUse
 
 func (s *server)  AssignUserToStudy(ctx context.Context, userStudy *pb.UserAssignment) (*pb.StudyMetaData, error) {
 	var result Study
-	objectIDS, err := primitive.ObjectIDFromHex(userStudy.StudyID)
-	filter := bson.M{"_id": objectIDS}
+	objectID, err := primitive.ObjectIDFromHex(userStudy.StudyID)
+	filter := bson.M{"_id": objectID}
 
 	err = studyCollection.FindOne(context.TODO(), filter).Decode(&result)
 	if err != nil {
@@ -120,15 +122,70 @@ func (s *server) GetAll(ctx context.Context, empty *pb.Empty) (*pb.StudyArray, e
 	var studies []*pb.StudyMetaData
 	documents := getAllStudies()
 	for _, document := range documents{
-		var study *pb.StudyMetaData = new(pb.StudyMetaData)
-		study.Id = document.ID.Hex()
-		study.Name = document.Name
-		study.Description = document.Description
-		study.Status = document.Status
-		study.StartDate = document.StartDate
-		study.Users = document.Users
+		if document.Status == "Active"{
+			var study *pb.StudyMetaData = new(pb.StudyMetaData)
+			study.Id = document.ID.Hex()
+			study.Name = document.Name
+			study.Description = document.Description
+			study.Status = document.Status
+			study.StartDate = document.StartDate
+			study.Users = document.Users
 
-		studies = append(studies, study)
+			studies = append(studies, study)
+		}
 	}
 	return &pb.StudyArray{Studies: studies}, nil
+}
+
+func (s *server) UpdateStudy(ctx context.Context, study *pb.StudyMetaData) (*pb.StudyMetaData, error){
+
+	var result Study
+	objectID, err := primitive.ObjectIDFromHex(study.Id)
+	fmt.Println(objectID)
+	filter := bson.M{"_id": objectID}
+
+	err = studyCollection.FindOne(context.TODO(), filter).Decode(&result)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	update := bson.M{
+		"$set": bson.M{
+			"name": study.Name, "description": study.Description, "status": study.Status}}
+
+	updateResult, err := studyCollection.UpdateOne(context.TODO(), filter, update)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	fmt.Printf("Matched %v documents and updated %v documents.\n", updateResult.MatchedCount, updateResult.ModifiedCount)
+
+	return &pb.StudyMetaData{Id: study.Id, Name: study.Name, Description: study.Description, StartDate: study.StartDate, Status: study.Status, Users: study.Users}, nil
+}
+
+func (s *server) DeleteStudy(ctx context.Context, study *pb.StudyID) (*pb.Empty, error) {
+
+	objectID, err := primitive.ObjectIDFromHex(study.StudyID)
+	filter := bson.M{"_id": objectID}
+	deleteResult, err := studyCollection.DeleteOne(context.TODO(), filter)
+	if err != nil {
+		log.Fatal(err)
+	}
+	fmt.Printf("Deleted %v documents in the trainers collection\n", deleteResult.DeletedCount)
+
+	return &pb.Empty{}, nil
+}
+
+func (s *server) GetStudy(ctx context.Context, study *pb.StudyID) (*pb.StudyMetaData, error) {
+	var result Study
+	objectID, err := primitive.ObjectIDFromHex(study.StudyID)
+	filter := bson.M{"_id": objectID}
+
+	err = studyCollection.FindOne(context.TODO(), filter).Decode(&result)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	return &pb.StudyMetaData{Id: result.ID.Hex(), Name: result.Name, Description: result.Description, Status: result.Status, StartDate:result.StartDate, Users: result.Users }, nil
+
 }

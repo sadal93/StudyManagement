@@ -26,7 +26,7 @@ func createUserDocument(doc User) {
 
 func (s *server)  CreateUser(ctx context.Context, user *pb.UserMetaData) (*pb.UserMetaData, error) {
 
-	userDoc:= User{user.UserID, user.TimeLastAssigned, user.TimeToSend, user.Role}
+	userDoc:= User{user.UserID, 0, 3600000, user.Role}
 	createUserDocument(userDoc)
 
 	log.Printf("User Created: %v", user.UserID)
