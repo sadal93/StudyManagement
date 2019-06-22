@@ -3,8 +3,8 @@ syntax = "proto3";
 package api;
 
 message AssignSurveyData{
-    int64 assignmentID = 1;
-    int64 surveyID = 2;
+    string id = 1;
+    string surveyID = 2;
     string userID = 3;
     string studyID = 4;
 }

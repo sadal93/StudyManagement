@@ -2,14 +2,12 @@ syntax = "proto3";
 
 package api;
 
-service User {
-    rpc CreateUser (UserMetaData) returns (UserMetaData) {}
-}
-
-
 message UserMetaData {
     string userID = 1;
     int64 timeLastAssigned = 2;
     int64 timeToSend = 3;
-    string role = 4;
+}
+
+service User {
+    rpc CreateUser (UserMetaData) returns (UserMetaData);
 }

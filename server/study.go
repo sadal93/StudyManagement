@@ -189,3 +189,29 @@ func (s *server) GetStudy(ctx context.Context, study *pb.StudyID) (*pb.StudyMeta
 	return &pb.StudyMetaData{Id: result.ID.Hex(), Name: result.Name, Description: result.Description, Status: result.Status, StartDate:result.StartDate, Users: result.Users }, nil
 
 }
+
+func (s *server) AssignWeeklySurvey(ctx context.Context, empty *pb.Empty) (*pb.Empty, error) {
+
+	var users[] string
+	documents := getAllStudies()
+
+	for _, document := range documents{
+		users = document.Users
+		var survey Survey
+		filter := bson.M{"study": document, "type": "weekly"}
+		err = surveyCollection.FindOne(context.TODO(), filter).Decode(&survey)
+		for _, user := range users{
+			var result User
+			filter := bson.M{"userid": user}
+			err = userCollection.FindOne(context.TODO(), filter).Decode(&result)
+			if (time.Now().UnixNano() / 1000000) - result.TimeLastAssigned >= result.TimeToSend{
+				assignSurveyDataDoc:= AssignSurvey{primitive.NewObjectID(), survey.ID.Hex(), user, document.ID.Hex()}
+				createAssignSurveyDocument(assignSurveyDataDoc)
+			}
+		}
+
+	}
+	time.Sleep(time.Minute)
+
+	return &pb.Empty{},nil
+}

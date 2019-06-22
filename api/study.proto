@@ -40,4 +40,5 @@ service Study {
     rpc UpdateStudy (StudyMetaData) returns (StudyMetaData);
     rpc DeleteStudy (StudyID) returns (Empty);
     rpc GetStudy (StudyID) returns (StudyMetaData);
+    rpc AssignWeeklySurvey (Empty) returns (Empty);
 }
