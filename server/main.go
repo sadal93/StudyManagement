@@ -22,7 +22,7 @@
 package main
 
 import (
-	pb "Thesis-demo/api"
+	pb "StudyManagement/api"
 	"context"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"

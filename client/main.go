@@ -25,7 +25,7 @@ import (
 	"log"
 	"time"
 
-	pb "Thesis-demo/api"
+	pb "StudyManagement/api"
 	"google.golang.org/grpc"
 )
 

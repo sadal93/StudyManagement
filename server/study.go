@@ -1,7 +1,7 @@
 package main
 
 import (
-	pb "Thesis-demo/api"
+	pb "StudyManagement/api"
 	"context"
 	"fmt"
 	"go.mongodb.org/mongo-driver/bson/primitive"
