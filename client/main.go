@@ -33,7 +33,7 @@ const (
 	address     = "localhost:50051"
 )
 
-func createUser( c pb.StudyClient, user pb.SignUpData){
+func userSignUp( c pb.StudyClient, user pb.SignUpData){
 
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
 	defer cancel()
@@ -236,12 +236,14 @@ func main() {
 	assignUserToStudy(f, userAssignment)*/
 
 	ID := "5d0b6b28678629f9b50baa02"
-	studyID := pb.StudyID{StudyID:ID}
+	//studyID := pb.StudyID{StudyID:ID}
 	//study2 := pb.StudyMetaData{Id: ID}
+	study := pb.SignUpData{StudyID: ID}
 
+	userSignUp(f, study)
 
 	//getStudy(f, study2)
-	getAllTriggers(f, studyID)
+	//getAllTriggers(f, studyID)
 
 	//getStudies(f)
 

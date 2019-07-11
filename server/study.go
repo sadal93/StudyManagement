@@ -331,7 +331,9 @@ func (s *server)  CheckTrigger(attributes *pb.Attributes, streamAction pb.Study_
 
 func (s *server)  UserSignUp(ctx context.Context, userStudy *pb.SignUpData) (*pb.UserMetaData, error) {
 
-	userDoc:= User{primitive.NewObjectID(), 0, 3600000}
+	userID := primitive.NewObjectID()
+
+	userDoc:= User{userID, 0, 3600000}
 	createUserDocument(userDoc)
 
 	var result Study
@@ -344,7 +346,7 @@ func (s *server)  UserSignUp(ctx context.Context, userStudy *pb.SignUpData) (*pb
 	}
 
 	if result.Users[0] == ""{
-		update1 := bson.M{"$push": bson.M{"users": userStudy.User.Id}}
+		update1 := bson.M{"$push": bson.M{"users": userID.Hex()}}
 		updateResult1, err1 := studyCollection.UpdateOne(context.TODO(), filter, update1)
 		fmt.Printf("Matched %v documents and updated %v documents.\n", updateResult1.MatchedCount, updateResult1.ModifiedCount)
 
@@ -357,7 +359,7 @@ func (s *server)  UserSignUp(ctx context.Context, userStudy *pb.SignUpData) (*pb
 		}
 
 	} else {
-		update := bson.M{"$push": bson.M{"users": userStudy.User.Id}}
+		update := bson.M{"$push": bson.M{"users": userID.Hex()}}
 
 		updateResult, err := studyCollection.UpdateOne(context.TODO(), filter, update)
 		if err != nil {
@@ -368,6 +370,6 @@ func (s *server)  UserSignUp(ctx context.Context, userStudy *pb.SignUpData) (*pb
 
 	}
 
-	log.Printf("User Created: %v", userStudy.User.Id)
+	log.Printf("User Created: %v", userStudy)
 	return &pb.UserMetaData{}, nil
 }
