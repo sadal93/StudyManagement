@@ -14,6 +14,10 @@ message StudyMetaData {
 message Empty{
 }
 
+message StudyID{
+    string studyID = 1;
+}
+
 message StudyArray{
     repeated StudyMetaData studies = 1;
 }
@@ -24,15 +28,20 @@ message SignUpData {
 }
 
 
-message CreatedTrigger {
-    repeated string condition = 1;
-    repeated Action action = 2;
-    string studyID = 3;
+message Trigger {
+    string id = 1;
+    repeated string condition = 2;
+    repeated Action action = 3;
+    string studyID = 4;
 
     message Condition {
         repeated string condition = 1;
     }
 
+}
+
+message TriggerArray{
+    repeated Trigger triggers = 1;
 }
 
 message Action {
@@ -56,13 +65,15 @@ message UserMetaData {
 
 service Study {
     rpc CreateStudy (StudyMetaData) returns (StudyMetaData);
-    rpc GetAll (Empty) returns (StudyArray);
+    rpc GetAllStudies (Empty) returns (StudyArray);
     rpc UpdateStudy (StudyMetaData) returns (StudyMetaData);
     rpc DeleteStudy (StudyMetaData) returns (Empty);
     rpc GetStudy (StudyMetaData) returns (StudyMetaData);
 
-    rpc CreateTrigger (CreatedTrigger) returns (CreatedTrigger) {}
-    rpc CheckTrigger (Attributes) returns (stream Action) {}
+    rpc CreateTrigger (Trigger) returns (Trigger);
+    rpc GetAllTriggers (StudyID) returns (TriggerArray);
+    rpc DeleteTrigger (Trigger) returns (Empty);
+    rpc CheckTrigger (Attributes) returns (stream Action);
 
     rpc UserSignUp (SignUpData) returns (UserMetaData);
 }

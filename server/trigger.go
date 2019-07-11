@@ -4,6 +4,7 @@ import (
 	pb "Thesis-demo/api"
 	"context"
 	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo/options"
 	"log"
 )
@@ -12,6 +13,7 @@ var triggerCollection = client.Database("test").Collection("triggers")
 var triggerResults []*Trigger
 
 type Trigger struct {
+	ID primitive.ObjectID  `bson:"_id,omitempty"`
 	Condition[] string
 	StudyID string
 	Action[]* pb.Action

@@ -33,11 +33,11 @@ const (
 	address     = "localhost:50051"
 )
 
-func createUser( c pb.UserClient, user pb.UserMetaData){
+func createUser( c pb.StudyClient, user pb.SignUpData){
 
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
 	defer cancel()
-	r, err := c.CreateUser(ctx, &pb.UserMetaData{Id: user.Id, TimeLastAssigned: user.TimeLastAssigned, TimeToSend: user.TimeToSend})
+	r, err := c.UserSignUp(ctx, &pb.SignUpData{User: user.User, StudyID: user.StudyID})
 	if err != nil {
 		log.Fatalf("could not insert: %v", err)
 	}
@@ -45,17 +45,6 @@ func createUser( c pb.UserClient, user pb.UserMetaData){
 	log.Print("User = ", r.Id)
 
 }
-
-func assignUserToStudy(c pb.StudyClient, studyUser pb.UserAssignment)  {
-	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
-	defer cancel()
-	r, err := c.AssignUserToStudy(ctx, &pb.UserAssignment{StudyID: studyUser.StudyID, UserID: studyUser.UserID })
-	if err != nil {
-		log.Fatalf("could not assign: %v", err)
-	}
-
-	log.Print("User = ", r.Users)
-	}
 
 func createStudy( c pb.StudyClient, study pb.StudyMetaData){
 
@@ -73,9 +62,9 @@ func createStudy( c pb.StudyClient, study pb.StudyMetaData){
 func getStudies( c pb.StudyClient){
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
 	defer cancel()
-	r, err := c.GetAll(ctx, &pb.Empty{})
+	r, err := c.GetAllStudies(ctx, &pb.Empty{})
 	if err != nil {
-		log.Fatalf("could not insert: %v", err)
+		log.Fatalf("could not retrieve: %v", err)
 	}
 	log.Print("Studies = ", r)
 }
@@ -91,10 +80,10 @@ func updateStudy(c pb.StudyClient, study pb.StudyMetaData){
 	log.Print("Study = ", r.Name)
 }
 
-func deleteStudy(c pb.StudyClient, study pb.StudyID){
+func deleteStudy(c pb.StudyClient, study pb.StudyMetaData){
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
 	defer cancel()
-	r, err := c.DeleteStudy(ctx, &pb.StudyID{StudyID: study.StudyID})
+	r, err := c.DeleteStudy(ctx, &pb.StudyMetaData{Id: study.Id})
 	if err != nil {
 		log.Fatalf("could not delete: %v", err)
 	}
@@ -102,24 +91,11 @@ func deleteStudy(c pb.StudyClient, study pb.StudyID){
 	log.Print("Study = ", r)
 }
 
-func getUsers(c pb.StudyClient, studyID pb.StudyID){
+func getStudy(c pb.StudyClient, study pb.StudyMetaData){
 
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
 	defer cancel()
-	r, err := c.GetUsers(ctx, &pb.StudyID{StudyID: studyID.StudyID})
-	if err != nil {
-		log.Fatalf("could not retrieve: %v", err)
-	}
-
-	log.Print("Users = ", r.Users)
-
-}
-
-func getStudy(c pb.StudyClient, studyID pb.StudyID){
-
-	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
-	defer cancel()
-	r, err := c.GetStudy(ctx, &pb.StudyID{StudyID: studyID.StudyID})
+	r, err := c.GetStudy(ctx, &pb.StudyMetaData{Id: study.Id})
 	if err != nil {
 		log.Fatalf("could not retrieve: %v", err)
 	}
@@ -128,7 +104,17 @@ func getStudy(c pb.StudyClient, studyID pb.StudyID){
 
 }
 
-func checkTrigger( c pb.TriggerClient, attributes pb.Attributes){
+func getAllTriggers( c pb.StudyClient, study pb.StudyID){
+	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
+	defer cancel()
+	r, err := c.GetAllTriggers(ctx, &pb.StudyID{StudyID: study.StudyID})
+	if err != nil {
+		log.Fatalf("could not retrieve: %v", err)
+	}
+	log.Print("Triggers = ", r)
+}
+
+func checkTrigger( c pb.StudyClient, attributes pb.Attributes){
 
 	stream, err := c.CheckTrigger(context.Background(), &pb.Attributes{Age: attributes.Age, Sick: attributes.Sick, Weight: attributes.Weight})
 
@@ -150,11 +136,11 @@ func checkTrigger( c pb.TriggerClient, attributes pb.Attributes){
 
 }
 
-func createTrigger( c pb.TriggerClient, trigger pb.CreatedTrigger){
+func createTrigger( c pb.StudyClient, trigger pb.Trigger){
 
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
 	defer cancel()
-	r, err := c.CreateTrigger(ctx, &pb.CreatedTrigger{Condition: trigger.Condition, StudyID: trigger.StudyID, Action: trigger.Action})
+	r, err := c.CreateTrigger(ctx, &pb.Trigger{Condition: trigger.Condition, StudyID: trigger.StudyID, Action: trigger.Action})
 	if err != nil {
 		log.Fatalf("could not insert: %v", err)
 	}
@@ -249,12 +235,13 @@ func main() {
 
 	assignUserToStudy(f, userAssignment)*/
 
-	studyID := "5d0b6b28678629f9b50baa02"
-	study2 := pb.StudyID{StudyID: studyID}
+	ID := "5d0b6b28678629f9b50baa02"
+	studyID := pb.StudyID{StudyID:ID}
+	//study2 := pb.StudyMetaData{Id: ID}
 
-	getStudy(f, study2)
 
-	getUsers(f, study2)
+	//getStudy(f, study2)
+	getAllTriggers(f, studyID)
 
 	//getStudies(f)
 

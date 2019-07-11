@@ -66,7 +66,7 @@ func (s *server)  CreateStudy(ctx context.Context, study *pb.StudyMetaData) (*pb
 }
 
 
-func (s *server) GetAll(ctx context.Context, empty *pb.Empty) (*pb.StudyArray, error) {
+func (s *server) GetAllStudies(ctx context.Context, empty *pb.Empty) (*pb.StudyArray, error) {
 
 	var studies []*pb.StudyMetaData
 	documents := getAllStudies()
@@ -120,7 +120,7 @@ func (s *server) DeleteStudy(ctx context.Context, study *pb.StudyMetaData) (*pb.
 	if err != nil {
 		log.Fatal(err)
 	}
-	fmt.Printf("Deleted %v documents in the trainers collection\n", deleteResult.DeletedCount)
+	fmt.Printf("Deleted %v documents in the studies collection\n", deleteResult.DeletedCount)
 
 	return &pb.Empty{}, nil
 }
@@ -164,13 +164,44 @@ func assignWeeklySurvey() {
 }
 
 
-func (s *server)  CreateTrigger(ctx context.Context, createdTrigger *pb.CreatedTrigger) (*pb.CreatedTrigger, error) {
+func (s *server)  CreateTrigger(ctx context.Context, createdTrigger *pb.Trigger) (*pb.Trigger, error) {
 
-	trigger := Trigger{createdTrigger.Condition, createdTrigger.StudyID, createdTrigger.Action}
+	trigger := Trigger{primitive.NewObjectID(), createdTrigger.Condition, createdTrigger.StudyID, createdTrigger.Action}
 	createTriggerDocument(trigger)
 
 	log.Printf("Trigger Created: %v", trigger.Condition)
-	return &pb.CreatedTrigger{Condition: createdTrigger.Condition, StudyID: createdTrigger.StudyID,  Action: createdTrigger.Action}, nil
+	return &pb.Trigger{Condition: createdTrigger.Condition, StudyID: createdTrigger.StudyID,  Action: createdTrigger.Action}, nil
+}
+
+func (s *server) GetAllTriggers(ctx context.Context, study *pb.StudyID) (*pb.TriggerArray, error) {
+
+	var triggers []*pb.Trigger
+	documents := getAllTriggers()
+	for _, document := range documents{
+		if document.StudyID == study.StudyID{
+			var trigger *pb.Trigger = new(pb.Trigger)
+			trigger.Id = document.ID.Hex()
+			trigger.Condition = document.Condition
+			trigger.Action = document.Action
+			trigger.StudyID = document.StudyID
+
+			triggers = append(triggers, trigger)
+		}
+	}
+	return &pb.TriggerArray{Triggers: triggers}, nil
+}
+
+func (s *server) DeleteTrigger(ctx context.Context, trigger *pb.Trigger) (*pb.Empty, error) {
+
+	objectID, err := primitive.ObjectIDFromHex(trigger.Id)
+	filter := bson.M{"_id": objectID}
+	deleteResult, err := triggerCollection.DeleteOne(context.TODO(), filter)
+	if err != nil {
+		log.Fatal(err)
+	}
+	fmt.Printf("Deleted %v documents in the triggers collection\n", deleteResult.DeletedCount)
+
+	return &pb.Empty{}, nil
 }
 
 func (s *server)  CheckTrigger(attributes *pb.Attributes, streamAction pb.Study_CheckTriggerServer)  error {

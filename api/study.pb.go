@@ -134,6 +134,45 @@ func (m *Empty) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_Empty proto.InternalMessageInfo
 
+type StudyID struct {
+	StudyID              string   `protobuf:"bytes,1,opt,name=studyID,proto3" json:"studyID,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *StudyID) Reset()         { *m = StudyID{} }
+func (m *StudyID) String() string { return proto.CompactTextString(m) }
+func (*StudyID) ProtoMessage()    {}
+func (*StudyID) Descriptor() ([]byte, []int) {
+	return fileDescriptor_b59e246e4c4c09f0, []int{2}
+}
+
+func (m *StudyID) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_StudyID.Unmarshal(m, b)
+}
+func (m *StudyID) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_StudyID.Marshal(b, m, deterministic)
+}
+func (m *StudyID) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_StudyID.Merge(m, src)
+}
+func (m *StudyID) XXX_Size() int {
+	return xxx_messageInfo_StudyID.Size(m)
+}
+func (m *StudyID) XXX_DiscardUnknown() {
+	xxx_messageInfo_StudyID.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_StudyID proto.InternalMessageInfo
+
+func (m *StudyID) GetStudyID() string {
+	if m != nil {
+		return m.StudyID
+	}
+	return ""
+}
+
 type StudyArray struct {
 	Studies              []*StudyMetaData `protobuf:"bytes,1,rep,name=studies,proto3" json:"studies,omitempty"`
 	XXX_NoUnkeyedLiteral struct{}         `json:"-"`
@@ -145,7 +184,7 @@ func (m *StudyArray) Reset()         { *m = StudyArray{} }
 func (m *StudyArray) String() string { return proto.CompactTextString(m) }
 func (*StudyArray) ProtoMessage()    {}
 func (*StudyArray) Descriptor() ([]byte, []int) {
-	return fileDescriptor_b59e246e4c4c09f0, []int{2}
+	return fileDescriptor_b59e246e4c4c09f0, []int{3}
 }
 
 func (m *StudyArray) XXX_Unmarshal(b []byte) error {
@@ -185,7 +224,7 @@ func (m *SignUpData) Reset()         { *m = SignUpData{} }
 func (m *SignUpData) String() string { return proto.CompactTextString(m) }
 func (*SignUpData) ProtoMessage()    {}
 func (*SignUpData) Descriptor() ([]byte, []int) {
-	return fileDescriptor_b59e246e4c4c09f0, []int{3}
+	return fileDescriptor_b59e246e4c4c09f0, []int{4}
 }
 
 func (m *SignUpData) XXX_Unmarshal(b []byte) error {
@@ -220,96 +259,143 @@ func (m *SignUpData) GetUser() *UserMetaData {
 	return nil
 }
 
-type CreatedTrigger struct {
-	Condition            []string  `protobuf:"bytes,1,rep,name=condition,proto3" json:"condition,omitempty"`
-	Action               []*Action `protobuf:"bytes,2,rep,name=action,proto3" json:"action,omitempty"`
-	StudyID              string    `protobuf:"bytes,3,opt,name=studyID,proto3" json:"studyID,omitempty"`
+type Trigger struct {
+	Id                   string    `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	Condition            []string  `protobuf:"bytes,2,rep,name=condition,proto3" json:"condition,omitempty"`
+	Action               []*Action `protobuf:"bytes,3,rep,name=action,proto3" json:"action,omitempty"`
+	StudyID              string    `protobuf:"bytes,4,opt,name=studyID,proto3" json:"studyID,omitempty"`
 	XXX_NoUnkeyedLiteral struct{}  `json:"-"`
 	XXX_unrecognized     []byte    `json:"-"`
 	XXX_sizecache        int32     `json:"-"`
 }
 
-func (m *CreatedTrigger) Reset()         { *m = CreatedTrigger{} }
-func (m *CreatedTrigger) String() string { return proto.CompactTextString(m) }
-func (*CreatedTrigger) ProtoMessage()    {}
-func (*CreatedTrigger) Descriptor() ([]byte, []int) {
-	return fileDescriptor_b59e246e4c4c09f0, []int{4}
+func (m *Trigger) Reset()         { *m = Trigger{} }
+func (m *Trigger) String() string { return proto.CompactTextString(m) }
+func (*Trigger) ProtoMessage()    {}
+func (*Trigger) Descriptor() ([]byte, []int) {
+	return fileDescriptor_b59e246e4c4c09f0, []int{5}
 }
 
-func (m *CreatedTrigger) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_CreatedTrigger.Unmarshal(m, b)
+func (m *Trigger) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_Trigger.Unmarshal(m, b)
 }
-func (m *CreatedTrigger) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_CreatedTrigger.Marshal(b, m, deterministic)
+func (m *Trigger) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_Trigger.Marshal(b, m, deterministic)
 }
-func (m *CreatedTrigger) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_CreatedTrigger.Merge(m, src)
+func (m *Trigger) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_Trigger.Merge(m, src)
 }
-func (m *CreatedTrigger) XXX_Size() int {
-	return xxx_messageInfo_CreatedTrigger.Size(m)
+func (m *Trigger) XXX_Size() int {
+	return xxx_messageInfo_Trigger.Size(m)
 }
-func (m *CreatedTrigger) XXX_DiscardUnknown() {
-	xxx_messageInfo_CreatedTrigger.DiscardUnknown(m)
+func (m *Trigger) XXX_DiscardUnknown() {
+	xxx_messageInfo_Trigger.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_CreatedTrigger proto.InternalMessageInfo
+var xxx_messageInfo_Trigger proto.InternalMessageInfo
 
-func (m *CreatedTrigger) GetCondition() []string {
+func (m *Trigger) GetId() string {
+	if m != nil {
+		return m.Id
+	}
+	return ""
+}
+
+func (m *Trigger) GetCondition() []string {
 	if m != nil {
 		return m.Condition
 	}
 	return nil
 }
 
-func (m *CreatedTrigger) GetAction() []*Action {
+func (m *Trigger) GetAction() []*Action {
 	if m != nil {
 		return m.Action
 	}
 	return nil
 }
 
-func (m *CreatedTrigger) GetStudyID() string {
+func (m *Trigger) GetStudyID() string {
 	if m != nil {
 		return m.StudyID
 	}
 	return ""
 }
 
-type CreatedTrigger_Condition struct {
+type Trigger_Condition struct {
 	Condition            []string `protobuf:"bytes,1,rep,name=condition,proto3" json:"condition,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
 }
 
-func (m *CreatedTrigger_Condition) Reset()         { *m = CreatedTrigger_Condition{} }
-func (m *CreatedTrigger_Condition) String() string { return proto.CompactTextString(m) }
-func (*CreatedTrigger_Condition) ProtoMessage()    {}
-func (*CreatedTrigger_Condition) Descriptor() ([]byte, []int) {
-	return fileDescriptor_b59e246e4c4c09f0, []int{4, 0}
+func (m *Trigger_Condition) Reset()         { *m = Trigger_Condition{} }
+func (m *Trigger_Condition) String() string { return proto.CompactTextString(m) }
+func (*Trigger_Condition) ProtoMessage()    {}
+func (*Trigger_Condition) Descriptor() ([]byte, []int) {
+	return fileDescriptor_b59e246e4c4c09f0, []int{5, 0}
 }
 
-func (m *CreatedTrigger_Condition) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_CreatedTrigger_Condition.Unmarshal(m, b)
+func (m *Trigger_Condition) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_Trigger_Condition.Unmarshal(m, b)
 }
-func (m *CreatedTrigger_Condition) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_CreatedTrigger_Condition.Marshal(b, m, deterministic)
+func (m *Trigger_Condition) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_Trigger_Condition.Marshal(b, m, deterministic)
 }
-func (m *CreatedTrigger_Condition) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_CreatedTrigger_Condition.Merge(m, src)
+func (m *Trigger_Condition) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_Trigger_Condition.Merge(m, src)
 }
-func (m *CreatedTrigger_Condition) XXX_Size() int {
-	return xxx_messageInfo_CreatedTrigger_Condition.Size(m)
+func (m *Trigger_Condition) XXX_Size() int {
+	return xxx_messageInfo_Trigger_Condition.Size(m)
 }
-func (m *CreatedTrigger_Condition) XXX_DiscardUnknown() {
-	xxx_messageInfo_CreatedTrigger_Condition.DiscardUnknown(m)
+func (m *Trigger_Condition) XXX_DiscardUnknown() {
+	xxx_messageInfo_Trigger_Condition.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_CreatedTrigger_Condition proto.InternalMessageInfo
+var xxx_messageInfo_Trigger_Condition proto.InternalMessageInfo
 
-func (m *CreatedTrigger_Condition) GetCondition() []string {
+func (m *Trigger_Condition) GetCondition() []string {
 	if m != nil {
 		return m.Condition
+	}
+	return nil
+}
+
+type TriggerArray struct {
+	Triggers             []*Trigger `protobuf:"bytes,1,rep,name=triggers,proto3" json:"triggers,omitempty"`
+	XXX_NoUnkeyedLiteral struct{}   `json:"-"`
+	XXX_unrecognized     []byte     `json:"-"`
+	XXX_sizecache        int32      `json:"-"`
+}
+
+func (m *TriggerArray) Reset()         { *m = TriggerArray{} }
+func (m *TriggerArray) String() string { return proto.CompactTextString(m) }
+func (*TriggerArray) ProtoMessage()    {}
+func (*TriggerArray) Descriptor() ([]byte, []int) {
+	return fileDescriptor_b59e246e4c4c09f0, []int{6}
+}
+
+func (m *TriggerArray) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_TriggerArray.Unmarshal(m, b)
+}
+func (m *TriggerArray) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_TriggerArray.Marshal(b, m, deterministic)
+}
+func (m *TriggerArray) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_TriggerArray.Merge(m, src)
+}
+func (m *TriggerArray) XXX_Size() int {
+	return xxx_messageInfo_TriggerArray.Size(m)
+}
+func (m *TriggerArray) XXX_DiscardUnknown() {
+	xxx_messageInfo_TriggerArray.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_TriggerArray proto.InternalMessageInfo
+
+func (m *TriggerArray) GetTriggers() []*Trigger {
+	if m != nil {
+		return m.Triggers
 	}
 	return nil
 }
@@ -326,7 +412,7 @@ func (m *Action) Reset()         { *m = Action{} }
 func (m *Action) String() string { return proto.CompactTextString(m) }
 func (*Action) ProtoMessage()    {}
 func (*Action) Descriptor() ([]byte, []int) {
-	return fileDescriptor_b59e246e4c4c09f0, []int{5}
+	return fileDescriptor_b59e246e4c4c09f0, []int{7}
 }
 
 func (m *Action) XXX_Unmarshal(b []byte) error {
@@ -375,7 +461,7 @@ func (m *Attributes) Reset()         { *m = Attributes{} }
 func (m *Attributes) String() string { return proto.CompactTextString(m) }
 func (*Attributes) ProtoMessage()    {}
 func (*Attributes) Descriptor() ([]byte, []int) {
-	return fileDescriptor_b59e246e4c4c09f0, []int{6}
+	return fileDescriptor_b59e246e4c4c09f0, []int{8}
 }
 
 func (m *Attributes) XXX_Unmarshal(b []byte) error {
@@ -437,7 +523,7 @@ func (m *UserMetaData) Reset()         { *m = UserMetaData{} }
 func (m *UserMetaData) String() string { return proto.CompactTextString(m) }
 func (*UserMetaData) ProtoMessage()    {}
 func (*UserMetaData) Descriptor() ([]byte, []int) {
-	return fileDescriptor_b59e246e4c4c09f0, []int{7}
+	return fileDescriptor_b59e246e4c4c09f0, []int{9}
 }
 
 func (m *UserMetaData) XXX_Unmarshal(b []byte) error {
@@ -482,10 +568,12 @@ func (m *UserMetaData) GetTimeToSend() int64 {
 func init() {
 	proto.RegisterType((*StudyMetaData)(nil), "api.StudyMetaData")
 	proto.RegisterType((*Empty)(nil), "api.Empty")
+	proto.RegisterType((*StudyID)(nil), "api.StudyID")
 	proto.RegisterType((*StudyArray)(nil), "api.StudyArray")
 	proto.RegisterType((*SignUpData)(nil), "api.SignUpData")
-	proto.RegisterType((*CreatedTrigger)(nil), "api.CreatedTrigger")
-	proto.RegisterType((*CreatedTrigger_Condition)(nil), "api.CreatedTrigger.Condition")
+	proto.RegisterType((*Trigger)(nil), "api.Trigger")
+	proto.RegisterType((*Trigger_Condition)(nil), "api.Trigger.Condition")
+	proto.RegisterType((*TriggerArray)(nil), "api.TriggerArray")
 	proto.RegisterType((*Action)(nil), "api.Action")
 	proto.RegisterType((*Attributes)(nil), "api.Attributes")
 	proto.RegisterType((*UserMetaData)(nil), "api.UserMetaData")
@@ -494,41 +582,44 @@ func init() {
 func init() { proto.RegisterFile("study.proto", fileDescriptor_b59e246e4c4c09f0) }
 
 var fileDescriptor_b59e246e4c4c09f0 = []byte{
-	// 538 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x94, 0x54, 0xcd, 0x6a, 0xdb, 0x40,
-	0x10, 0x8e, 0x2c, 0x4b, 0xa9, 0x47, 0x49, 0x9a, 0x6e, 0x4b, 0x11, 0xa2, 0x14, 0xa3, 0x12, 0x70,
-	0x4b, 0x6b, 0x8c, 0x4b, 0x2e, 0xed, 0xc9, 0xd8, 0x25, 0x14, 0x9a, 0x8b, 0x1c, 0x3f, 0xc0, 0xda,
-	0x1a, 0x94, 0x6d, 0x6c, 0x59, 0x68, 0xc7, 0x2d, 0x7e, 0x93, 0x1e, 0xdb, 0x37, 0x2d, 0x3b, 0x2b,
-	0xdb, 0x32, 0x36, 0x81, 0xdc, 0x76, 0xbe, 0xf9, 0xfd, 0x66, 0x3e, 0x09, 0x02, 0x4d, 0xab, 0x74,
-	0xdd, 0x2d, 0xca, 0x25, 0x2d, 0x85, 0x2b, 0x0b, 0x15, 0xff, 0x73, 0xe0, 0x7c, 0x6c, 0xc0, 0x5b,
-	0x24, 0x39, 0x92, 0x24, 0xc5, 0x05, 0x34, 0x54, 0x1a, 0x3a, 0x6d, 0xa7, 0xd3, 0x4a, 0x1a, 0x2a,
-	0x15, 0x02, 0x9a, 0xb9, 0x5c, 0x60, 0xd8, 0x60, 0x84, 0xdf, 0xa2, 0x0d, 0x41, 0x8a, 0x7a, 0x56,
-	0xaa, 0x82, 0xd4, 0x32, 0x0f, 0x5d, 0x76, 0xd5, 0x21, 0xf1, 0x06, 0x5a, 0x9a, 0x64, 0x49, 0x23,
-	0x49, 0x18, 0x36, 0xdb, 0x4e, 0xc7, 0x4d, 0x76, 0x80, 0x78, 0x0d, 0xbe, 0x26, 0x49, 0x2b, 0x1d,
-	0x7a, 0x9c, 0x5a, 0x59, 0xe2, 0x15, 0x78, 0x2b, 0x8d, 0xa5, 0x0e, 0xfd, 0xb6, 0xdb, 0x69, 0x25,
-	0xd6, 0x88, 0x4f, 0xc1, 0xfb, 0xb6, 0x28, 0x68, 0x1d, 0x7f, 0x01, 0xe0, 0x59, 0x07, 0x65, 0x29,
-	0xd7, 0xe2, 0x23, 0x9c, 0x1a, 0x3a, 0x0a, 0x75, 0xe8, 0xb4, 0xdd, 0x4e, 0xd0, 0x17, 0x5d, 0x59,
-	0xa8, 0xee, 0x1e, 0x9b, 0x64, 0x13, 0x12, 0xdf, 0x02, 0x8c, 0x55, 0x96, 0x4f, 0x0a, 0x26, 0x19,
-	0xda, 0xdc, 0xf5, 0xf7, 0x51, 0xc5, 0x74, 0x63, 0x8a, 0x2b, 0x68, 0x9a, 0xae, 0x4c, 0x37, 0xe8,
-	0xbf, 0xe0, 0x92, 0x13, 0x8d, 0xe5, 0xb6, 0x22, 0xbb, 0xe3, 0x3f, 0x0e, 0x5c, 0x0c, 0x4b, 0x94,
-	0x84, 0xe9, 0x5d, 0xa9, 0xb2, 0x0c, 0x4b, 0x43, 0x79, 0xb6, 0xcc, 0x53, 0xc5, 0x2b, 0x71, 0x98,
-	0xc0, 0x0e, 0x10, 0xef, 0xc0, 0x97, 0x33, 0x76, 0x35, 0x78, 0xd8, 0x80, 0x2b, 0x0f, 0x18, 0x4a,
-	0x2a, 0x57, 0x7d, 0x2c, 0x77, 0x6f, 0xac, 0xe8, 0x3d, 0xb4, 0x86, 0xdb, 0x5a, 0x8f, 0x76, 0x8a,
-	0xfb, 0xe0, 0xdb, 0xb2, 0xe6, 0x74, 0xb4, 0x2e, 0xb0, 0xa2, 0xc8, 0x6f, 0xb3, 0xe2, 0x5f, 0x72,
-	0xbe, 0xda, 0xdc, 0xd3, 0x1a, 0xf1, 0x14, 0x60, 0x40, 0x54, 0xaa, 0xe9, 0x8a, 0x50, 0x9b, 0xf3,
-	0x18, 0x92, 0xdb, 0xe5, 0x54, 0x96, 0xb8, 0x04, 0x57, 0x66, 0x36, 0xd3, 0x4b, 0xcc, 0xd3, 0x74,
-	0xd0, 0x6a, 0xf6, 0x50, 0x4d, 0xcb, 0x6f, 0x93, 0xfd, 0x1b, 0x55, 0x76, 0x4f, 0x7c, 0x77, 0x2f,
-	0xa9, 0xac, 0xf8, 0x27, 0x9c, 0xd5, 0x17, 0x79, 0x20, 0xb4, 0x0f, 0x70, 0x49, 0x6a, 0x81, 0x3f,
-	0xa4, 0xa6, 0x81, 0xd6, 0x2a, 0xcb, 0x31, 0xe5, 0x56, 0x6e, 0x72, 0x80, 0x8b, 0xb7, 0x00, 0x06,
-	0xbb, 0x5b, 0x8e, 0x31, 0x4f, 0xb9, 0xbb, 0x9b, 0xd4, 0x90, 0xfe, 0x5f, 0x17, 0x3c, 0x16, 0x82,
-	0xb8, 0x86, 0xc0, 0xde, 0xc9, 0x9a, 0x47, 0x34, 0x12, 0x1d, 0xc1, 0xc4, 0x15, 0xf8, 0x37, 0x48,
-	0x83, 0xf9, 0x5c, 0x00, 0x7b, 0x59, 0x80, 0xd1, 0xf3, 0x5d, 0xa4, 0xd5, 0xe0, 0x35, 0x04, 0x93,
-	0x22, 0x7d, 0x72, 0xf5, 0x4f, 0x10, 0x8c, 0x70, 0x8e, 0x8f, 0xa5, 0xd5, 0xda, 0x8a, 0x3e, 0x3c,
-	0xbb, 0x41, 0x7a, 0x5a, 0x8b, 0xaf, 0x70, 0x6e, 0x79, 0x6f, 0xe4, 0xf9, 0x92, 0x83, 0xf6, 0x35,
-	0x1b, 0x1d, 0x03, 0xe3, 0x13, 0xd1, 0x83, 0xb3, 0xe1, 0x3d, 0xce, 0x1e, 0x36, 0xb9, 0x96, 0xf7,
-	0x4e, 0x21, 0x51, 0x5d, 0xbd, 0xf1, 0x49, 0xcf, 0x11, 0x3d, 0x00, 0x73, 0x5c, 0xfb, 0x89, 0x55,
-	0xf1, 0xbb, 0xef, 0x2d, 0x3a, 0xfc, 0x8e, 0xa6, 0x3e, 0xff, 0x85, 0x3e, 0xff, 0x0f, 0x00, 0x00,
-	0xff, 0xff, 0x4a, 0x04, 0xe2, 0xe5, 0x94, 0x04, 0x00, 0x00,
+	// 592 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x94, 0x54, 0xe1, 0x8a, 0xda, 0x40,
+	0x10, 0x26, 0xc6, 0xe8, 0x39, 0xd1, 0xeb, 0xdd, 0x52, 0x4a, 0x08, 0x47, 0x91, 0x1c, 0x05, 0xaf,
+	0xbd, 0xca, 0xd5, 0x72, 0x50, 0xfa, 0x4f, 0xb4, 0x1c, 0x85, 0xde, 0x9f, 0x78, 0x3e, 0xc0, 0x6a,
+	0x96, 0xdc, 0xf6, 0x34, 0x86, 0xec, 0xd8, 0xe2, 0xe3, 0xf4, 0x19, 0xfb, 0x02, 0x65, 0x67, 0x37,
+	0x1a, 0xab, 0x2d, 0xdc, 0xbf, 0x9d, 0x6f, 0x67, 0xe6, 0x9b, 0xf9, 0xf2, 0x6d, 0xc0, 0x57, 0xb8,
+	0x4e, 0x36, 0xfd, 0xbc, 0x58, 0xe1, 0x8a, 0xb9, 0x3c, 0x97, 0xd1, 0x2f, 0x07, 0x3a, 0x13, 0x0d,
+	0xde, 0x0b, 0xe4, 0x63, 0x8e, 0x9c, 0x9d, 0x42, 0x4d, 0x26, 0x81, 0xd3, 0x75, 0x7a, 0xad, 0xb8,
+	0x26, 0x13, 0xc6, 0xa0, 0x9e, 0xf1, 0xa5, 0x08, 0x6a, 0x84, 0xd0, 0x99, 0x75, 0xc1, 0x4f, 0x84,
+	0x9a, 0x17, 0x32, 0x47, 0xb9, 0xca, 0x02, 0x97, 0xae, 0xaa, 0x10, 0xbb, 0x80, 0x96, 0x42, 0x5e,
+	0xe0, 0x98, 0xa3, 0x08, 0xea, 0x5d, 0xa7, 0xe7, 0xc6, 0x3b, 0x80, 0xbd, 0x82, 0x86, 0x42, 0x8e,
+	0x6b, 0x15, 0x78, 0x54, 0x6a, 0x23, 0xf6, 0x12, 0xbc, 0xb5, 0x12, 0x85, 0x0a, 0x1a, 0x5d, 0xb7,
+	0xd7, 0x8a, 0x4d, 0x10, 0x35, 0xc1, 0xfb, 0xb2, 0xcc, 0x71, 0x13, 0x5d, 0x42, 0x93, 0x66, 0xfd,
+	0x3a, 0x66, 0x01, 0x34, 0x95, 0x39, 0xda, 0x51, 0xcb, 0x30, 0xfa, 0x0c, 0x40, 0x49, 0xc3, 0xa2,
+	0xe0, 0x1b, 0x76, 0x6d, 0xf2, 0xa4, 0x50, 0x81, 0xd3, 0x75, 0x7b, 0xfe, 0x80, 0xf5, 0x79, 0x2e,
+	0xfb, 0x7b, 0x2b, 0xc7, 0x65, 0x4a, 0x74, 0x0f, 0x30, 0x91, 0x69, 0x36, 0xcd, 0x49, 0x89, 0x7f,
+	0x72, 0xb0, 0x37, 0x50, 0xd7, 0xa3, 0x91, 0x26, 0xfe, 0xe0, 0x9c, 0x5a, 0x4e, 0x95, 0x28, 0xb6,
+	0x1d, 0xe9, 0x5a, 0x8b, 0xdb, 0x7c, 0x28, 0x64, 0x9a, 0x8a, 0xe2, 0x40, 0xd6, 0x0b, 0x68, 0xcd,
+	0x57, 0x59, 0x22, 0x49, 0xc0, 0x1a, 0xad, 0xbb, 0x03, 0xd8, 0x25, 0x34, 0xf8, 0xdc, 0x6a, 0xab,
+	0xa7, 0xf6, 0x89, 0x62, 0x48, 0x50, 0x6c, 0xaf, 0xaa, 0xf3, 0xd5, 0xf7, 0xe6, 0x0b, 0xaf, 0xa0,
+	0x35, 0xda, 0xf6, 0xda, 0x63, 0x72, 0xfe, 0x62, 0x8a, 0x3e, 0x41, 0xdb, 0x8e, 0x68, 0x04, 0xeb,
+	0xc1, 0x09, 0x9a, 0xb8, 0x54, 0xac, 0x4d, 0xdc, 0x36, 0x29, 0xde, 0xde, 0x46, 0x03, 0x68, 0x98,
+	0x81, 0xb4, 0x45, 0x70, 0x93, 0x0b, 0xbb, 0x1d, 0x9d, 0xf5, 0xa7, 0xfc, 0xc1, 0x17, 0xeb, 0xd2,
+	0x37, 0x26, 0x88, 0x66, 0x00, 0x43, 0xc4, 0x42, 0xce, 0xd6, 0x28, 0x94, 0xb6, 0x81, 0xd6, 0x69,
+	0xab, 0xaf, 0x8d, 0xd8, 0x19, 0xb8, 0x3c, 0x35, 0x95, 0x5e, 0xac, 0x8f, 0x9a, 0x41, 0xc9, 0xf9,
+	0x93, 0x75, 0x1a, 0x9d, 0x75, 0xf5, 0x4f, 0x21, 0xd3, 0x47, 0xa4, 0xed, 0xbd, 0xd8, 0x46, 0xd1,
+	0x77, 0x68, 0x57, 0xbf, 0xc5, 0x81, 0xf2, 0x6f, 0xe1, 0x0c, 0xe5, 0x52, 0x7c, 0xe3, 0x0a, 0x87,
+	0x4a, 0xc9, 0x34, 0x13, 0x09, 0x51, 0xb9, 0xf1, 0x01, 0xce, 0x5e, 0x03, 0x68, 0xec, 0x61, 0x35,
+	0x11, 0x59, 0x42, 0xec, 0x6e, 0x5c, 0x41, 0x06, 0xbf, 0x5d, 0xf0, 0xc8, 0x4b, 0xec, 0x16, 0xfc,
+	0x51, 0x21, 0x38, 0x0a, 0x13, 0x1e, 0xb1, 0x59, 0x78, 0x04, 0x63, 0xd7, 0xd0, 0xb9, 0x13, 0x38,
+	0x5c, 0x2c, 0x26, 0xc6, 0x82, 0x0c, 0x28, 0x89, 0xfc, 0x1e, 0xbe, 0xd8, 0x15, 0x98, 0x8f, 0x73,
+	0x0b, 0xfe, 0x34, 0x4f, 0x9e, 0x4d, 0xf2, 0x1e, 0xfc, 0xb1, 0x58, 0x88, 0xff, 0x95, 0x55, 0x68,
+	0xd9, 0x00, 0x4e, 0xee, 0x04, 0x3e, 0x8f, 0xe2, 0x1d, 0x74, 0xcc, 0xfa, 0xa5, 0xdf, 0xf7, 0x5c,
+	0x13, 0xee, 0x45, 0xec, 0x03, 0x9c, 0x9a, 0xa5, 0x2d, 0xa0, 0x6c, 0xb6, 0x7d, 0xdc, 0xe1, 0x79,
+	0x35, 0xdb, 0x6c, 0xde, 0x87, 0xf6, 0xe8, 0x51, 0xcc, 0x9f, 0xca, 0x16, 0x46, 0x9a, 0x9d, 0x97,
+	0xc2, 0xea, 0x0b, 0xb9, 0x71, 0xd8, 0x15, 0x74, 0xcc, 0xca, 0xc7, 0xe7, 0xa9, 0xae, 0x7b, 0x03,
+	0xa0, 0xfd, 0x62, 0x1e, 0xbe, 0x6d, 0xbc, 0xfb, 0x0b, 0x84, 0x87, 0xaf, 0x7b, 0xd6, 0xa0, 0x1f,
+	0xe8, 0xc7, 0x3f, 0x01, 0x00, 0x00, 0xff, 0xff, 0xae, 0xf5, 0x1b, 0x3e, 0x4f, 0x05, 0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -544,12 +635,14 @@ const _ = grpc.SupportPackageIsVersion4
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://godoc.org/google.golang.org/grpc#ClientConn.NewStream.
 type StudyClient interface {
 	CreateStudy(ctx context.Context, in *StudyMetaData, opts ...grpc.CallOption) (*StudyMetaData, error)
-	GetAll(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*StudyArray, error)
+	GetAllStudies(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*StudyArray, error)
 	UpdateStudy(ctx context.Context, in *StudyMetaData, opts ...grpc.CallOption) (*StudyMetaData, error)
 	DeleteStudy(ctx context.Context, in *StudyMetaData, opts ...grpc.CallOption) (*Empty, error)
 	GetStudy(ctx context.Context, in *StudyMetaData, opts ...grpc.CallOption) (*StudyMetaData, error)
-	CreateTrigger(ctx context.Context, in *CreatedTrigger, opts ...grpc.CallOption) (*CreatedTrigger, error)
+	CreateTrigger(ctx context.Context, in *Trigger, opts ...grpc.CallOption) (*Trigger, error)
+	GetAllTriggers(ctx context.Context, in *StudyID, opts ...grpc.CallOption) (*TriggerArray, error)
 	CheckTrigger(ctx context.Context, in *Attributes, opts ...grpc.CallOption) (Study_CheckTriggerClient, error)
+	DeleteTrigger(ctx context.Context, in *Trigger, opts ...grpc.CallOption) (*Empty, error)
 	UserSignUp(ctx context.Context, in *SignUpData, opts ...grpc.CallOption) (*UserMetaData, error)
 }
 
@@ -570,9 +663,9 @@ func (c *studyClient) CreateStudy(ctx context.Context, in *StudyMetaData, opts .
 	return out, nil
 }
 
-func (c *studyClient) GetAll(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*StudyArray, error) {
+func (c *studyClient) GetAllStudies(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*StudyArray, error) {
 	out := new(StudyArray)
-	err := c.cc.Invoke(ctx, "/api.Study/GetAll", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/api.Study/GetAllStudies", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -606,9 +699,18 @@ func (c *studyClient) GetStudy(ctx context.Context, in *StudyMetaData, opts ...g
 	return out, nil
 }
 
-func (c *studyClient) CreateTrigger(ctx context.Context, in *CreatedTrigger, opts ...grpc.CallOption) (*CreatedTrigger, error) {
-	out := new(CreatedTrigger)
+func (c *studyClient) CreateTrigger(ctx context.Context, in *Trigger, opts ...grpc.CallOption) (*Trigger, error) {
+	out := new(Trigger)
 	err := c.cc.Invoke(ctx, "/api.Study/CreateTrigger", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *studyClient) GetAllTriggers(ctx context.Context, in *StudyID, opts ...grpc.CallOption) (*TriggerArray, error) {
+	out := new(TriggerArray)
+	err := c.cc.Invoke(ctx, "/api.Study/GetAllTriggers", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -647,6 +749,15 @@ func (x *studyCheckTriggerClient) Recv() (*Action, error) {
 	return m, nil
 }
 
+func (c *studyClient) DeleteTrigger(ctx context.Context, in *Trigger, opts ...grpc.CallOption) (*Empty, error) {
+	out := new(Empty)
+	err := c.cc.Invoke(ctx, "/api.Study/DeleteTrigger", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *studyClient) UserSignUp(ctx context.Context, in *SignUpData, opts ...grpc.CallOption) (*UserMetaData, error) {
 	out := new(UserMetaData)
 	err := c.cc.Invoke(ctx, "/api.Study/UserSignUp", in, out, opts...)
@@ -659,12 +770,14 @@ func (c *studyClient) UserSignUp(ctx context.Context, in *SignUpData, opts ...gr
 // StudyServer is the server API for Study service.
 type StudyServer interface {
 	CreateStudy(context.Context, *StudyMetaData) (*StudyMetaData, error)
-	GetAll(context.Context, *Empty) (*StudyArray, error)
+	GetAllStudies(context.Context, *Empty) (*StudyArray, error)
 	UpdateStudy(context.Context, *StudyMetaData) (*StudyMetaData, error)
 	DeleteStudy(context.Context, *StudyMetaData) (*Empty, error)
 	GetStudy(context.Context, *StudyMetaData) (*StudyMetaData, error)
-	CreateTrigger(context.Context, *CreatedTrigger) (*CreatedTrigger, error)
+	CreateTrigger(context.Context, *Trigger) (*Trigger, error)
+	GetAllTriggers(context.Context, *StudyID) (*TriggerArray, error)
 	CheckTrigger(*Attributes, Study_CheckTriggerServer) error
+	DeleteTrigger(context.Context, *Trigger) (*Empty, error)
 	UserSignUp(context.Context, *SignUpData) (*UserMetaData, error)
 }
 
@@ -675,8 +788,8 @@ type UnimplementedStudyServer struct {
 func (*UnimplementedStudyServer) CreateStudy(ctx context.Context, req *StudyMetaData) (*StudyMetaData, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateStudy not implemented")
 }
-func (*UnimplementedStudyServer) GetAll(ctx context.Context, req *Empty) (*StudyArray, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetAll not implemented")
+func (*UnimplementedStudyServer) GetAllStudies(ctx context.Context, req *Empty) (*StudyArray, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetAllStudies not implemented")
 }
 func (*UnimplementedStudyServer) UpdateStudy(ctx context.Context, req *StudyMetaData) (*StudyMetaData, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UpdateStudy not implemented")
@@ -687,11 +800,17 @@ func (*UnimplementedStudyServer) DeleteStudy(ctx context.Context, req *StudyMeta
 func (*UnimplementedStudyServer) GetStudy(ctx context.Context, req *StudyMetaData) (*StudyMetaData, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetStudy not implemented")
 }
-func (*UnimplementedStudyServer) CreateTrigger(ctx context.Context, req *CreatedTrigger) (*CreatedTrigger, error) {
+func (*UnimplementedStudyServer) CreateTrigger(ctx context.Context, req *Trigger) (*Trigger, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateTrigger not implemented")
+}
+func (*UnimplementedStudyServer) GetAllTriggers(ctx context.Context, req *StudyID) (*TriggerArray, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetAllTriggers not implemented")
 }
 func (*UnimplementedStudyServer) CheckTrigger(req *Attributes, srv Study_CheckTriggerServer) error {
 	return status.Errorf(codes.Unimplemented, "method CheckTrigger not implemented")
+}
+func (*UnimplementedStudyServer) DeleteTrigger(ctx context.Context, req *Trigger) (*Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeleteTrigger not implemented")
 }
 func (*UnimplementedStudyServer) UserSignUp(ctx context.Context, req *SignUpData) (*UserMetaData, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UserSignUp not implemented")
@@ -719,20 +838,20 @@ func _Study_CreateStudy_Handler(srv interface{}, ctx context.Context, dec func(i
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Study_GetAll_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _Study_GetAllStudies_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(Empty)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(StudyServer).GetAll(ctx, in)
+		return srv.(StudyServer).GetAllStudies(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/api.Study/GetAll",
+		FullMethod: "/api.Study/GetAllStudies",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(StudyServer).GetAll(ctx, req.(*Empty))
+		return srv.(StudyServer).GetAllStudies(ctx, req.(*Empty))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -792,7 +911,7 @@ func _Study_GetStudy_Handler(srv interface{}, ctx context.Context, dec func(inte
 }
 
 func _Study_CreateTrigger_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(CreatedTrigger)
+	in := new(Trigger)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -804,7 +923,25 @@ func _Study_CreateTrigger_Handler(srv interface{}, ctx context.Context, dec func
 		FullMethod: "/api.Study/CreateTrigger",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(StudyServer).CreateTrigger(ctx, req.(*CreatedTrigger))
+		return srv.(StudyServer).CreateTrigger(ctx, req.(*Trigger))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Study_GetAllTriggers_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(StudyID)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(StudyServer).GetAllTriggers(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/api.Study/GetAllTriggers",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(StudyServer).GetAllTriggers(ctx, req.(*StudyID))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -828,6 +965,24 @@ type studyCheckTriggerServer struct {
 
 func (x *studyCheckTriggerServer) Send(m *Action) error {
 	return x.ServerStream.SendMsg(m)
+}
+
+func _Study_DeleteTrigger_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(Trigger)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(StudyServer).DeleteTrigger(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/api.Study/DeleteTrigger",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(StudyServer).DeleteTrigger(ctx, req.(*Trigger))
+	}
+	return interceptor(ctx, in, info, handler)
 }
 
 func _Study_UserSignUp_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
@@ -857,8 +1012,8 @@ var _Study_serviceDesc = grpc.ServiceDesc{
 			Handler:    _Study_CreateStudy_Handler,
 		},
 		{
-			MethodName: "GetAll",
-			Handler:    _Study_GetAll_Handler,
+			MethodName: "GetAllStudies",
+			Handler:    _Study_GetAllStudies_Handler,
 		},
 		{
 			MethodName: "UpdateStudy",
@@ -875,6 +1030,14 @@ var _Study_serviceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "CreateTrigger",
 			Handler:    _Study_CreateTrigger_Handler,
+		},
+		{
+			MethodName: "GetAllTriggers",
+			Handler:    _Study_GetAllTriggers_Handler,
+		},
+		{
+			MethodName: "DeleteTrigger",
+			Handler:    _Study_DeleteTrigger_Handler,
 		},
 		{
 			MethodName: "UserSignUp",
