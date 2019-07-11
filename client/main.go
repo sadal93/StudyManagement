@@ -37,12 +37,12 @@ func createUser( c pb.UserClient, user pb.UserMetaData){
 
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
 	defer cancel()
-	r, err := c.CreateUser(ctx, &pb.UserMetaData{UserID: user.UserID, TimeLastAssigned: user.TimeLastAssigned, TimeToSend: user.TimeToSend, Role: user.Role})
+	r, err := c.CreateUser(ctx, &pb.UserMetaData{Id: user.Id, TimeLastAssigned: user.TimeLastAssigned, TimeToSend: user.TimeToSend})
 	if err != nil {
 		log.Fatalf("could not insert: %v", err)
 	}
 
-	log.Print("User = ", r.UserID)
+	log.Print("User = ", r.Id)
 
 }
 

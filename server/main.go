@@ -49,11 +49,7 @@ func main() {
 	}
 
 	s := grpc.NewServer()
-	//pb.RegisterAdditionServer(s, &server{})
-	pb.RegisterTriggerServer(s, &server{})
-	pb.RegisterUserServer(s, &server{})
 	pb.RegisterStudyServer(s, &server{})
-	pb.RegisterAssignSurveyServer(s, &server{})
 	if err := s.Serve(lis); err != nil {
 		log.Fatalf("failed to serve: %v", err )
 	}

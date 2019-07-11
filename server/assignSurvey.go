@@ -2,7 +2,6 @@ package main
 
 import (
 	"context"
-	pb "Thesis-demo/api"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"log"
 )
@@ -24,16 +23,5 @@ func createAssignSurveyDocument(doc AssignSurvey) {
 
 	log.Print(insertResult)
 }
-
-func (s *server)  AssignSurvey(ctx context.Context, assignSurveyData *pb.AssignSurveyData) (*pb.AssignSurveyData, error) {
-	assignSurveyDataDoc:= AssignSurvey{primitive.NewObjectID(), assignSurveyData.SurveyID, assignSurveyData.UserID, assignSurveyData.StudyID}
-	createAssignSurveyDocument(assignSurveyDataDoc)
-
-	log.Printf("Assignment Created: %v", assignSurveyData.Id)
-	return &pb.AssignSurveyData{StudyID: assignSurveyData.StudyID, SurveyID: assignSurveyData.SurveyID, UserID: assignSurveyData.UserID, Id: assignSurveyData.Id}, nil
-}
-
-
-
 
 

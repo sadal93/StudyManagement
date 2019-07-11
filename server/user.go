@@ -1,15 +1,15 @@
 package main
 
 import (
-	pb "Thesis-demo/api"
 	"context"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	"log"
 )
 
 var userCollection = client.Database("test").Collection("users")
 
 type User struct {
-	UserID string
+	ID primitive.ObjectID  `bson:"_id,omitempty"`
 	TimeLastAssigned int64
 	TimeToSend int64
 }
@@ -21,15 +21,6 @@ func createUserDocument(doc User) {
 	}
 
 	log.Print(insertResult)
-}
-
-func (s *server)  CreateUser(ctx context.Context, user *pb.UserMetaData) (*pb.UserMetaData, error) {
-
-	userDoc:= User{user.UserID, 0, 3600000}
-	createUserDocument(userDoc)
-
-	log.Printf("User Created: %v", user.UserID)
-	return &pb.UserMetaData{UserID: user.UserID, TimeLastAssigned: user.TimeLastAssigned, TimeToSend: user.TimeToSend, Studies: user.Studies}, nil
 }
 
 

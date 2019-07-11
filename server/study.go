@@ -8,6 +8,9 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 	"labix.org/v2/mgo/bson"
 	"log"
+	"reflect"
+	"strconv"
+	"strings"
 	"time"
 )
 
@@ -62,60 +65,6 @@ func (s *server)  CreateStudy(ctx context.Context, study *pb.StudyMetaData) (*pb
 	return &pb.StudyMetaData{Name: study.Name, Description: study.Description, StartDate: study.StartDate, Status: study.Status, Users: study.Users}, nil
 }
 
-func (s *server)  GetUsers(ctx context.Context, study *pb.StudyID) (*pb.StudyUsers, error) {
-
-	var result Study
-	objectID, err := primitive.ObjectIDFromHex(study.StudyID)
-
-	filter := bson.M{"_id": objectID}
-
-	err = studyCollection.FindOne(context.TODO(), filter).Decode(&result)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	log.Printf("Users for this study: %v", result.Users)
-
-	return &pb.StudyUsers{Users: result.Users}, nil
-}
-
-func (s *server)  AssignUserToStudy(ctx context.Context, userStudy *pb.UserAssignment) (*pb.StudyMetaData, error) {
-	var result Study
-	objectID, err := primitive.ObjectIDFromHex(userStudy.StudyID)
-	filter := bson.M{"_id": objectID}
-
-	err = studyCollection.FindOne(context.TODO(), filter).Decode(&result)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	if result.Users[0] == ""{
-		update1 := bson.M{"$push": bson.M{"users": userStudy.UserID}}
-		updateResult1, err1 := studyCollection.UpdateOne(context.TODO(), filter, update1)
-		fmt.Printf("Matched %v documents and updated %v documents.\n", updateResult1.MatchedCount, updateResult1.ModifiedCount)
-
-		update2 := bson.M{"$pop": bson.M{"users": -1}}
-		updateResult2, err2 := studyCollection.UpdateOne(context.TODO(), filter, update2)
-		fmt.Printf("Matched %v documents and updated %v documents.\n", updateResult2.MatchedCount, updateResult2.ModifiedCount)
-
-		if err1 != nil || err2 != nil {
-			log.Fatal(err)
-		}
-
-	} else {
-		update := bson.M{"$push": bson.M{"users": userStudy.UserID}}
-
-		updateResult, err := studyCollection.UpdateOne(context.TODO(), filter, update)
-		if err != nil {
-			log.Fatal(err)
-		}
-
-		fmt.Printf("Matched %v documents and updated %v documents.\n", updateResult.MatchedCount, updateResult.ModifiedCount)
-
-	}
-
-	return &pb.StudyMetaData{}, nil
-}
 
 func (s *server) GetAll(ctx context.Context, empty *pb.Empty) (*pb.StudyArray, error) {
 
@@ -163,9 +112,9 @@ func (s *server) UpdateStudy(ctx context.Context, study *pb.StudyMetaData) (*pb.
 	return &pb.StudyMetaData{Id: study.Id, Name: study.Name, Description: study.Description, StartDate: study.StartDate, Status: study.Status, Users: study.Users}, nil
 }
 
-func (s *server) DeleteStudy(ctx context.Context, study *pb.StudyID) (*pb.Empty, error) {
+func (s *server) DeleteStudy(ctx context.Context, study *pb.StudyMetaData) (*pb.Empty, error) {
 
-	objectID, err := primitive.ObjectIDFromHex(study.StudyID)
+	objectID, err := primitive.ObjectIDFromHex(study.Id)
 	filter := bson.M{"_id": objectID}
 	deleteResult, err := studyCollection.DeleteOne(context.TODO(), filter)
 	if err != nil {
@@ -176,9 +125,9 @@ func (s *server) DeleteStudy(ctx context.Context, study *pb.StudyID) (*pb.Empty,
 	return &pb.Empty{}, nil
 }
 
-func (s *server) GetStudy(ctx context.Context, study *pb.StudyID) (*pb.StudyMetaData, error) {
+func (s *server) GetStudy(ctx context.Context, study *pb.StudyMetaData) (*pb.StudyMetaData, error) {
 	var result Study
-	objectID, err := primitive.ObjectIDFromHex(study.StudyID)
+	objectID, err := primitive.ObjectIDFromHex(study.Id)
 	filter := bson.M{"_id": objectID}
 
 	err = studyCollection.FindOne(context.TODO(), filter).Decode(&result)
@@ -190,7 +139,7 @@ func (s *server) GetStudy(ctx context.Context, study *pb.StudyID) (*pb.StudyMeta
 
 }
 
-func (s *server) AssignWeeklySurvey(ctx context.Context, empty *pb.Empty) (*pb.Empty, error) {
+func assignWeeklySurvey() {
 
 	var users[] string
 	documents := getAllStudies()
@@ -212,6 +161,182 @@ func (s *server) AssignWeeklySurvey(ctx context.Context, empty *pb.Empty) (*pb.E
 
 	}
 	time.Sleep(time.Minute)
+}
 
-	return &pb.Empty{},nil
+
+func (s *server)  CreateTrigger(ctx context.Context, createdTrigger *pb.CreatedTrigger) (*pb.CreatedTrigger, error) {
+
+	trigger := Trigger{createdTrigger.Condition, createdTrigger.StudyID, createdTrigger.Action}
+	createTriggerDocument(trigger)
+
+	log.Printf("Trigger Created: %v", trigger.Condition)
+	return &pb.CreatedTrigger{Condition: createdTrigger.Condition, StudyID: createdTrigger.StudyID,  Action: createdTrigger.Action}, nil
+}
+
+func (s *server)  CheckTrigger(attributes *pb.Attributes, streamAction pb.Study_CheckTriggerServer)  error {
+	documents := getAllTriggers()
+	//fmt.Println("USER: " , attributes)
+	var actions []*pb.Action
+
+	attributesObj := Attributes{ attributes.Age, attributes.Sick, attributes.Weight}
+
+	for _,document := range documents {
+		checks := document.Condition
+		fmt.Println("Document: ", document)
+		var conditions []bool
+
+		for  _,check := range checks{
+			condition := false
+			var operator string
+			var attribute string
+			var value int64
+			var valueString string
+			if strings.Contains(check, "<"){
+				condition := strings.Split(check, "<")
+				attribute = condition[0]
+				if i, err := strconv.Atoi(condition[1]); err == nil {
+					fmt.Println(" i: ", i)
+					value = int64(i)
+					fmt.Println(" value: ", value)
+				} else {
+					valueString = condition[1]
+					fmt.Println(" value: ", valueString)
+				}
+				fmt.Println(" attribute: ", attribute)
+
+				operator = "<"
+				fmt.Println(" operator: ", operator)
+
+			} else if strings.Contains(check, ">"){
+				condition := strings.Split(check, ">")
+				attribute = condition[0]
+				if i, err := strconv.Atoi(condition[1]); err == nil {
+					fmt.Println(" i = ", i)
+					value = int64(i)
+					fmt.Println(" value: ", value)
+				} else {
+					valueString = condition[1]
+					fmt.Println(" value: ", valueString)
+				}
+
+				fmt.Println(" attribute: ", attribute)
+
+				operator = ">"
+				fmt.Println(" operator: ", operator)
+
+			} else {
+				condition := strings.Split(check, "=")
+				attribute = condition[0]
+				if i, err := strconv.Atoi(condition[1]); err == nil {
+					fmt.Println(" i: ", i)
+					value = int64(i)
+					fmt.Println(" value: ", value)
+				} else {
+					valueString = condition[1]
+					fmt.Println(" value: ", valueString)
+				}
+
+				fmt.Println(" attribute: ", attribute)
+
+				operator = "="
+				fmt.Println(" operator: ", operator)
+			}
+
+			switch operator {
+			case ">":
+				rv := reflect.ValueOf(attributesObj)
+				//rv = rv.Elem()
+				fmt.Println("  rv: ", rv)
+				fmt.Println("  field by name: ", rv.FieldByName(attribute))
+				if rv.FieldByName(attribute).Int() > value{
+					condition = true
+				}
+				fmt.Println(" CONDITION ", condition)
+				conditions = append(conditions, condition)
+
+			case "<":
+				rv := reflect.ValueOf(attributesObj)
+				//rv = rv.Elem()
+				fmt.Println("  rv: ", rv)
+				fmt.Println("  field by name: ", rv.FieldByName(attribute))
+				if rv.FieldByName(attribute).Int() < value{
+					condition = true
+				}
+				fmt.Println(" CONDITION ", condition)
+				conditions = append(conditions, condition)
+
+			case "=":
+				rv := reflect.ValueOf(attributesObj)
+				//rv = rv.Elem()
+				fmt.Println("  rv: ", rv)
+				fmt.Println("  field by name: ", rv.FieldByName(attribute))
+				if  rv.FieldByName(attribute).String() == valueString{
+					condition = true
+				}
+				fmt.Println(" CONDITION ", condition)
+				conditions = append(conditions, condition)
+			}
+
+		}
+		fmt.Println("CONDITIONS", conditions)
+		fmt.Println("")
+
+		if !contains(conditions, false){
+			actions = document.Action
+		}
+	}
+
+	for _,action := range actions{
+		if action.Type == "survey"{
+
+		}
+		err := streamAction.Send(&pb.Action{Type:action.Type, Value:action.Value})
+		if err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+func (s *server)  UserSignUp(ctx context.Context, userStudy *pb.SignUpData) (*pb.UserMetaData, error) {
+
+	userDoc:= User{primitive.NewObjectID(), 0, 3600000}
+	createUserDocument(userDoc)
+
+	var result Study
+	objectID, err := primitive.ObjectIDFromHex(userStudy.StudyID)
+	filter := bson.M{"_id": objectID}
+
+	err = studyCollection.FindOne(context.TODO(), filter).Decode(&result)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	if result.Users[0] == ""{
+		update1 := bson.M{"$push": bson.M{"users": userStudy.User.Id}}
+		updateResult1, err1 := studyCollection.UpdateOne(context.TODO(), filter, update1)
+		fmt.Printf("Matched %v documents and updated %v documents.\n", updateResult1.MatchedCount, updateResult1.ModifiedCount)
+
+		update2 := bson.M{"$pop": bson.M{"users": -1}}
+		updateResult2, err2 := studyCollection.UpdateOne(context.TODO(), filter, update2)
+		fmt.Printf("Matched %v documents and updated %v documents.\n", updateResult2.MatchedCount, updateResult2.ModifiedCount)
+
+		if err1 != nil || err2 != nil {
+			log.Fatal(err)
+		}
+
+	} else {
+		update := bson.M{"$push": bson.M{"users": userStudy.User.Id}}
+
+		updateResult, err := studyCollection.UpdateOne(context.TODO(), filter, update)
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		fmt.Printf("Matched %v documents and updated %v documents.\n", updateResult.MatchedCount, updateResult.ModifiedCount)
+
+	}
+
+	log.Printf("User Created: %v", userStudy.User.Id)
+	return &pb.UserMetaData{}, nil
 }
