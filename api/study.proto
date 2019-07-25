@@ -1,6 +1,9 @@
 syntax = "proto3";
 
 package api;
+option go_package = "api";
+
+import "survey.proto";
 
 message StudyMetaData {
     string id = 1;
@@ -62,6 +65,18 @@ message UserMetaData {
     int64 timeToSend = 3;
 }
 
+message AssignedSurvey{
+    string id = 1;
+    SurveyData survey = 2;
+    string userID = 3;
+    string studyID = 4;
+}
+
+message Answer{
+    string assignmentID = 1;
+    SurveyData survey = 2;
+}
+
 
 service Study {
     rpc CreateStudy (StudyMetaData) returns (StudyMetaData);
@@ -76,4 +91,7 @@ service Study {
     rpc CheckTrigger (Attributes) returns (stream Action);
 
     rpc UserSignUp (SignUpData) returns (UserMetaData);
+
+    rpc GetAssignedSurvey (AssignedSurvey) returns (SurveyData);
+    rpc AnswerSurvey (Answer) returns (AssignedSurvey);
 }

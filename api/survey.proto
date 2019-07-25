@@ -1,0 +1,75 @@
+syntax = "proto3";
+
+package api;
+
+message Question{
+
+    message AnswerOptions{
+        OpenOptions openOptions = 1;
+        MultipleOptions multipleOptions = 2;
+        repeated MatrixOptions matrixOptions = 3;
+        repeated HideQuestion hideQuestion = 4;
+    }
+
+    message OpenOptions{
+        string dataType = 1;
+        string value = 2;
+        int32 limit = 3;
+    }
+
+    message MultipleOptions{
+        repeated string multipleOptions = 1;
+        string selectedOption = 2;
+    }
+
+    message MatrixOptions{
+        string text = 1;
+        repeated string options = 2;
+        string selectedOption = 3;
+    }
+
+    message HideQuestion{
+        string selectedOption = 1;
+        string question = 2;
+    }
+
+    message QuestionWithLanguage {
+        string language = 1;
+        string text = 2;
+        AnswerOptions answerOptions = 3;
+    }
+
+    string id = 1;
+    string type = 2;
+    repeated QuestionWithLanguage questionWithLanguage = 3;
+
+}
+
+message QuestionID{
+    string questionID = 1;
+}
+
+message QuestionArray{
+    repeated Question questions = 1;
+}
+
+message EmptySurvey{
+
+}
+
+message SurveyData{
+
+    string id = 1;
+    string description = 2;
+    repeated Question questions = 3;
+}
+
+service Survey{
+    rpc CreateSurvey(SurveyData) returns (SurveyData);
+
+    rpc CreateQuestion(Question) returns (Question);
+    rpc DeleteQuestion(QuestionID) returns (EmptySurvey);
+    rpc GetQuestion(QuestionID) returns (Question);
+    rpc GetAllQuestions (EmptySurvey) returns (QuestionArray);
+
+}

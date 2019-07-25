@@ -1,13 +1,16 @@
 package main
 
-import "go.mongodb.org/mongo-driver/bson/primitive"
+import (
+	pb "StudyManagement/api"
+	"go.mongodb.org/mongo-driver/bson/primitive"
+)
 
-var surveyCollection = client.Database("test").Collection("users")
+
+var surveyCollection = client.Database("test").Collection("survey")
 
 type Survey struct {
 	ID primitive.ObjectID  `bson:"_id,omitempty"`
-	Type string
-	Study string
 	Description string
+	Questions[]* pb.Question
 }
 

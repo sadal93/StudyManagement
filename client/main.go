@@ -235,15 +235,15 @@ func main() {
 
 	assignUserToStudy(f, userAssignment)*/
 
-	ID := "5d0b6b28678629f9b50baa02"
-	//studyID := pb.StudyID{StudyID:ID}
+	ID := "5d2c7e87bd9caa1ab0e3a3f6"
+	studyID := pb.StudyID{StudyID:ID}
 	//study2 := pb.StudyMetaData{Id: ID}
-	study := pb.SignUpData{StudyID: ID}
+	//study := pb.SignUpData{StudyID: ID}
 
-	userSignUp(f, study)
+	//userSignUp(f, study)
 
 	//getStudy(f, study2)
-	//getAllTriggers(f, studyID)
+	getAllTriggers(f, studyID)
 
 	//getStudies(f)
 

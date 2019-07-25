@@ -15,7 +15,6 @@ import (
 )
 
 var studyCollection = client.Database("test").Collection("study")
-var studyResults []*Study
 
 type Study struct {
 	ID primitive.ObjectID  `bson:"_id,omitempty"`
@@ -36,6 +35,7 @@ func createStudyDocument(doc Study) {
 }
 
 func getAllStudies() []*Study{
+	var studyResults []*Study
 	if err != nil{
 		log.Fatal(err)
 	}
@@ -146,15 +146,15 @@ func assignWeeklySurvey() {
 
 	for _, document := range documents{
 		users = document.Users
-		var survey Survey
-		filter := bson.M{"study": document, "type": "weekly"}
+		var survey pb.SurveyData
+		filter := bson.M{"study": document, "type": "timely"}
 		err = surveyCollection.FindOne(context.TODO(), filter).Decode(&survey)
 		for _, user := range users{
 			var result User
 			filter := bson.M{"userid": user}
 			err = userCollection.FindOne(context.TODO(), filter).Decode(&result)
 			if (time.Now().UnixNano() / 1000000) - result.TimeLastAssigned >= result.TimeToSend{
-				assignSurveyDataDoc:= AssignSurvey{primitive.NewObjectID(), survey.ID.Hex(), user, document.ID.Hex()}
+				assignSurveyDataDoc:= AssignedSurvey{primitive.NewObjectID(), survey, user, document.ID.Hex()}
 				createAssignSurveyDocument(assignSurveyDataDoc)
 			}
 		}
@@ -373,3 +373,51 @@ func (s *server)  UserSignUp(ctx context.Context, userStudy *pb.SignUpData) (*pb
 	log.Printf("User Created: %v", userStudy)
 	return &pb.UserMetaData{}, nil
 }
+
+func (s *server)  GetAssignedSurvey(ctx context.Context, assignedSurvey *pb.AssignedSurvey) (*pb.SurveyData, error) {
+
+	survey := assignedSurvey.Survey
+
+	var result Survey
+	objectID, err := primitive.ObjectIDFromHex(survey.Id)
+
+	filter := bson.M{"_id": objectID}
+
+	err = surveyCollection.FindOne(context.TODO(), filter).Decode(&result)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	return &pb.SurveyData{Id: result.ID.Hex(), Description: result.Description, Questions: result.Questions}, nil
+
+}
+
+func (s *server)  AnswerSurvey(ctx context.Context, answer *pb.Answer) (*pb.AssignedSurvey, error) {
+
+	assignmentID := answer.AssignmentID
+
+	var result AssignedSurvey
+	objectID, err := primitive.ObjectIDFromHex(assignmentID)
+	fmt.Println(objectID)
+	filter := bson.M{"_id": objectID}
+
+	err = assignSurveyCollection.FindOne(context.TODO(), filter).Decode(&result)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	update := bson.M{
+		"$set": bson.M{
+			"survey": answer.Survey}}
+
+	updateResult, err := assignSurveyCollection.UpdateOne(context.TODO(), filter, update)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	fmt.Printf("Matched %v documents and updated %v documents.\n", updateResult.MatchedCount, updateResult.ModifiedCount)
+
+	return &pb.AssignedSurvey{Id: result.ID.Hex(), Survey: answer.Survey, UserID: result.UserID, StudyID: result.StudyID}, nil
+}
+
+

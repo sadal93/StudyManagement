@@ -10,7 +10,6 @@ import (
 )
 
 var triggerCollection = client.Database("test").Collection("triggers")
-var triggerResults []*Trigger
 
 type Trigger struct {
 	ID primitive.ObjectID  `bson:"_id,omitempty"`
@@ -50,6 +49,7 @@ func createTriggerDocument(doc Trigger) {
 
 
 func getAllTriggers() []*Trigger{
+	var triggerResults []*Trigger
 	if err != nil{
 		log.Fatal(err)
 	}

@@ -1,6 +1,7 @@
 package main
 
 import (
+	pb "StudyManagement/api"
 	"context"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"log"
@@ -8,14 +9,14 @@ import (
 
 var assignSurveyCollection = client.Database("test").Collection("assign_surveys")
 
-type AssignSurvey struct {
+type AssignedSurvey struct {
 	ID primitive.ObjectID  `bson:"_id,omitempty"`
-	SurveyID string
+	survey pb.SurveyData
 	UserID string
 	StudyID string
 }
 
-func createAssignSurveyDocument(doc AssignSurvey) {
+func createAssignSurveyDocument(doc AssignedSurvey) {
 	insertResult, err := assignSurveyCollection.InsertOne(context.TODO(), doc)
 	if err != nil {
 		log.Fatal(err)
