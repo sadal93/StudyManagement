@@ -139,6 +139,43 @@ func (s *server) GetStudy(ctx context.Context, study *pb.StudyMetaData) (*pb.Stu
 
 }
 
+func (s *server) LeaveStudy(ctx context.Context, userStudy *pb.SignUpData) (*pb.Empty, error) {
+
+	var study Study
+	studyID, err := primitive.ObjectIDFromHex(userStudy.StudyID)
+	filterStudy := bson.M{"_id": studyID}
+
+	err = studyCollection.FindOne(context.TODO(), filterStudy).Decode(&study)
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	for _, user := range study.Users{
+		if user == userStudy.User.Id{
+			update := bson.M{"$pop": bson.M{"users": -1}}
+			updateResult, err := studyCollection.UpdateOne(context.TODO(), filterStudy, update)
+			fmt.Printf("Matched %v documents and updated %v documents.\n", updateResult.MatchedCount, updateResult.ModifiedCount)
+
+			if err != nil {
+				log.Fatal(err)
+			}
+		}
+	}
+
+	//var user User
+	userID, err := primitive.ObjectIDFromHex(userStudy.User.Id)
+	filterUser := bson.M{"_id": userID}
+	//err = userCollection.FindOne(context.TODO(), filterUser).Decode(&user)
+	deleteResult, err := studyCollection.DeleteOne(context.TODO(), filterUser)
+	if err != nil {
+		log.Fatal(err)
+	}
+	fmt.Printf("Deleted %v documents in the studies collection\n", deleteResult.DeletedCount)
+
+	return &pb.Empty{}, nil
+}
+
 func assignWeeklySurvey() {
 
 	var users[] string

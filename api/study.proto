@@ -84,6 +84,7 @@ service Study {
     rpc UpdateStudy (StudyMetaData) returns (StudyMetaData);
     rpc DeleteStudy (StudyMetaData) returns (Empty);
     rpc GetStudy (StudyMetaData) returns (StudyMetaData);
+    rpc LeaveStudy (SignUpData) returns (Empty);
 
     rpc CreateTrigger (Trigger) returns (Trigger);
     rpc GetAllTriggers (StudyID) returns (TriggerArray);
