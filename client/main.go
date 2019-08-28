@@ -218,13 +218,13 @@ func main() {
 	studyToDelete := pb.StudyID{StudyID: id}
 	deleteStudy(f, studyToDelete)*/
 	//id := "5d0b6b28678629f9b50baa02"
-	/*name:= "Headache Study"
-	description := "Study about Headache"
+	/*name:= "Flu Study"
+	description := "Study about Flu"
 	//var startDate int64 = time.Now().UnixNano() / 1000000
-	status := "Active"
-	//users := []string{""}
+	status := "active"
+	users := []string{""}
 
-	study1 := pb.StudyMetaData{Name: name, Description: description, Status: status}
+	study1 := pb.StudyMetaData{Name: name, Description: description, Status: status, Users: users}
 	createStudy(f, study1)*/
 	//updateStudy(f, study1)
 
@@ -235,15 +235,15 @@ func main() {
 
 	assignUserToStudy(f, userAssignment)*/
 
-	ID := "5d2c7e87bd9caa1ab0e3a3f6"
-	studyID := pb.StudyID{StudyID:ID}
+	ID := "5d668a75cafae765108b25a2"
+	//studyID := pb.StudyID{StudyID:ID}
 	//study2 := pb.StudyMetaData{Id: ID}
-	//study := pb.SignUpData{StudyID: ID}
+	study := pb.SignUpData{StudyID: ID}
 
-	//userSignUp(f, study)
+	userSignUp(f, study)
 
 	//getStudy(f, study2)
-	getAllTriggers(f, studyID)
+	//getAllTriggers(f, studyID)
 
 	//getStudies(f)
 

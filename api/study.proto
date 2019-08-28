@@ -70,6 +70,8 @@ message AssignedSurvey{
     SurveyData survey = 2;
     string userID = 3;
     string studyID = 4;
+    int64 timestamp = 5;
+    bool submitted = 6;
 }
 
 message Answer{

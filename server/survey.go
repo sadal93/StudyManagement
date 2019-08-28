@@ -6,11 +6,13 @@ import (
 )
 
 
-var surveyCollection = client.Database("test").Collection("survey")
+var surveyCollection = client.Database("test").Collection("surveys")
 
 type Survey struct {
 	ID primitive.ObjectID  `bson:"_id,omitempty"`
 	Description string
+	Type string
+	Study string
 	Questions[]* pb.Question
 }
 
