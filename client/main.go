@@ -21,7 +21,6 @@ package main
 
 import (
 	"context"
-	"io"
 	"log"
 	"time"
 
@@ -115,25 +114,14 @@ func getAllTriggers( c pb.StudyClient, study pb.StudyID){
 }
 
 func checkTrigger( c pb.StudyClient, attributes pb.Attributes){
-
-	stream, err := c.CheckTrigger(context.Background(), &pb.Attributes{Age: attributes.Age, Sick: attributes.Sick, Weight: attributes.Weight})
+	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
+	defer cancel()
+	r, err := c.CheckTrigger(ctx, &pb.Attributes{UserID: attributes.UserID, Age: attributes.Age, Sick: attributes.Sick, Weight: attributes.Weight})
 
 	if err != nil {
 		log.Fatalf("Error Occured: %v", err)
 	}
-
-	for {
-		strm, err := stream.Recv()
-		if err == io.EOF {
-			break
-		}
-		if err != nil {
-			log.Fatalf("%v.Add(_) = _, %v", c, err)
-		}
-		log.Print("Action: ", strm)
-	}
-
-
+	log.Print("Success = ", r)
 }
 
 func createTrigger( c pb.StudyClient, trigger pb.Trigger){
@@ -235,12 +223,12 @@ func main() {
 
 	assignUserToStudy(f, userAssignment)*/
 
-	ID := "5d668a75cafae765108b25a2"
+	//ID := "5d668a75cafae765108b25a2"
 	//studyID := pb.StudyID{StudyID:ID}
 	//study2 := pb.StudyMetaData{Id: ID}
-	study := pb.SignUpData{StudyID: ID}
+	//study := pb.SignUpData{StudyID: ID}
 
-	userSignUp(f, study)
+	//userSignUp(f, study)
 
 	//getStudy(f, study2)
 	//getAllTriggers(f, studyID)
@@ -257,6 +245,7 @@ func main() {
 	//getSum(c, 2, 4)
 	//getStreamSum(c, 1, 7)
 
-
+	attributes := pb.Attributes{UserID: "5d668b14cafae765108b25a3", Age: 26, Sick: "yes", Weight: 70}
+	checkTrigger(f, attributes)
 
 }

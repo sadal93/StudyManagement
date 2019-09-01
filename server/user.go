@@ -12,6 +12,9 @@ type User struct {
 	ID primitive.ObjectID  `bson:"_id,omitempty"`
 	TimeLastAssigned int64
 	TimeToSend int64
+	TimeLastAssigned2 int64
+	TimeToSend2 int64
+
 }
 
 func createUserDocument(doc User) {

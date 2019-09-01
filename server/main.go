@@ -189,16 +189,50 @@ func assignWeeklySurvey() {
 	for true{
 		for _, document := range documents{
 			users = document.Users
-			var survey Survey
-			filter := bson.M{"type": "timely", "study": document.ID.Hex()}
-			err = surveyCollection.FindOne(context.TODO(), filter).Decode(&survey)
+			var timelysurvey, monthlySurvey Survey
+			filter1 := bson.M{"type": "timely", "study": document.ID.Hex()}
+			filter2 := bson.M{"type": "timely2", "study": document.ID.Hex()}
+			err = surveyCollection.FindOne(context.TODO(), filter1).Decode(&timelysurvey)
+			err = surveyCollection.FindOne(context.TODO(), filter2).Decode(&monthlySurvey)
 			for _, user := range users{
 				var result User
-				filter := bson.M{"userid": user}
+				objectID, err := primitive.ObjectIDFromHex(user)
+				if err != nil {
+					log.Fatal(err)
+				}
+				filter := bson.M{"_id": objectID}
 				err = userCollection.FindOne(context.TODO(), filter).Decode(&result)
 				if (time.Now().UnixNano() / 1000000) - result.TimeLastAssigned >= result.TimeToSend{
-					assignSurveyDataDoc:= AssignedSurvey{primitive.NewObjectID(), survey, user, document.ID.Hex(), time.Now().UnixNano() / 1000000, false}
+					assignSurveyDataDoc:= AssignedSurvey{primitive.NewObjectID(), timelysurvey, user, document.ID.Hex(), time.Now().UnixNano() / 1000000, false}
 					createAssignSurveyDocument(assignSurveyDataDoc)
+
+					update := bson.M{
+						"$set": bson.M{
+							"timelastassigned": time.Now().UnixNano() / 1000000}}
+
+					filter := bson.M{"_id": objectID}
+					updateResult, err := userCollection.UpdateOne(context.TODO(), filter, update)
+					if err != nil {
+						log.Fatal(err)
+					}
+
+					fmt.Printf("Matched %v documents and updated %v documents.\n", updateResult.MatchedCount, updateResult.ModifiedCount)
+				}
+				if (time.Now().UnixNano() / 1000000) - result.TimeLastAssigned2 >= result.TimeToSend2{
+					assignSurveyDataDoc:= AssignedSurvey{primitive.NewObjectID(), monthlySurvey, user, document.ID.Hex(), time.Now().UnixNano() / 1000000, false}
+					createAssignSurveyDocument(assignSurveyDataDoc)
+
+					update := bson.M{
+						"$set": bson.M{
+							"timelastassigned2": time.Now().UnixNano() / 1000000}}
+
+					filter := bson.M{"_id": objectID}
+					updateResult, err := userCollection.UpdateOne(context.TODO(), filter, update)
+					if err != nil {
+						log.Fatal(err)
+					}
+
+					fmt.Printf("Matched %v documents and updated %v documents.\n", updateResult.MatchedCount, updateResult.ModifiedCount)
 				}
 			}
 
@@ -250,10 +284,11 @@ func (s *server) DeleteTrigger(ctx context.Context, trigger *pb.Trigger) (*pb.Em
 	return &pb.Empty{}, nil
 }
 
-func (s *server)  CheckTrigger(attributes *pb.Attributes, streamAction pb.Study_CheckTriggerServer)  error {
+func (s *server)  CheckTrigger(ctx context.Context, attributes *pb.Attributes)  (*pb.Empty, error) {
 	documents := getAllTriggers()
 	//fmt.Println("USER: " , attributes)
 	var actions []*pb.Action
+	var studyID string
 
 	attributesObj := Attributes{ attributes.Age, attributes.Sick, attributes.Weight}
 
@@ -360,26 +395,63 @@ func (s *server)  CheckTrigger(attributes *pb.Attributes, streamAction pb.Study_
 
 		if !contains(conditions, false){
 			actions = document.Action
+			studyID = document.StudyID
 		}
 	}
 
 	for _,action := range actions{
 		if action.Type == "survey"{
+			var survey Survey
+			objectID, err := primitive.ObjectIDFromHex(action.Value)
+			filter := bson.M{"_id": objectID}
+			err = surveyCollection.FindOne(context.TODO(), filter).Decode(&survey)
 
+			if err != nil {
+				log.Fatal(err)
+			}
+
+			assignSurveyDataDoc:= AssignedSurvey{primitive.NewObjectID(), survey, attributes.UserID, studyID, time.Now().UnixNano() / 1000000, false}
+			createAssignSurveyDocument(assignSurveyDataDoc)
 		}
-		err := streamAction.Send(&pb.Action{Type:action.Type, Value:action.Value})
-		if err != nil {
-			return err
+
+		if action.Type == "time" {
+			objectID, err := primitive.ObjectIDFromHex(attributes.UserID)
+			filter := bson.M{"_id": objectID}
+			n, err := strconv.ParseInt(action.Value, 10, 64)
+			update := bson.M{
+				"$set": bson.M{
+					"timetosend": n}}
+			updateResult, err := userCollection.UpdateOne(context.TODO(), filter, update)
+			if err != nil {
+				log.Fatal(err)
+			}
+
+			fmt.Printf("Matched %v documents and updated %v documents.\n", updateResult.MatchedCount, updateResult.ModifiedCount)
+		}
+
+		if action.Type == "time2" {
+			objectID, err := primitive.ObjectIDFromHex(attributes.UserID)
+			filter := bson.M{"_id": objectID}
+			n, err := strconv.ParseInt(action.Value, 10, 64)
+			update := bson.M{
+				"$set": bson.M{
+					"timetosend2": n}}
+			updateResult, err := userCollection.UpdateOne(context.TODO(), filter, update)
+			if err != nil {
+				log.Fatal(err)
+			}
+
+			fmt.Printf("Matched %v documents and updated %v documents.\n", updateResult.MatchedCount, updateResult.ModifiedCount)
 		}
 	}
-	return nil
+	return &pb.Empty{}, nil
 }
 
 func (s *server)  UserSignUp(ctx context.Context, userStudy *pb.SignUpData) (*pb.UserMetaData, error) {
 
 	userID := primitive.NewObjectID()
 
-	userDoc:= User{userID, 0, 3600000}
+	userDoc:= User{userID, 0, 3600000, 0, 3600000*24}
 	createUserDocument(userDoc)
 
 	var result Study

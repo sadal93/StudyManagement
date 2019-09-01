@@ -63,6 +63,8 @@ message UserMetaData {
     string id = 1;
     int64 timeLastAssigned = 2;
     int64 timeToSend = 3;
+    int64 timeLastAssigned2 = 4;
+    int64 timeToSend2 = 5;
 }
 
 message AssignedSurvey{
@@ -91,7 +93,7 @@ service Study {
     rpc CreateTrigger (Trigger) returns (Trigger);
     rpc GetAllTriggers (StudyID) returns (TriggerArray);
     rpc DeleteTrigger (Trigger) returns (Empty);
-    rpc CheckTrigger (Attributes) returns (stream Action);
+    rpc CheckTrigger (Attributes) returns (Empty);
 
     rpc UserSignUp (SignUpData) returns (UserMetaData);
 

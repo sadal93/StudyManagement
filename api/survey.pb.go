@@ -25,12 +25,12 @@ var _ = math.Inf
 const _ = proto.ProtoPackageIsVersion3 // please upgrade the proto package
 
 type Question struct {
-	Id                   string                           `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
-	Type                 string                           `protobuf:"bytes,2,opt,name=type,proto3" json:"type,omitempty"`
-	QuestionWithLanguage []*Question_QuestionWithLanguage `protobuf:"bytes,3,rep,name=questionWithLanguage,proto3" json:"questionWithLanguage,omitempty"`
-	XXX_NoUnkeyedLiteral struct{}                         `json:"-"`
-	XXX_unrecognized     []byte                           `json:"-"`
-	XXX_sizecache        int32                            `json:"-"`
+	Id                   string                         `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	Type                 string                         `protobuf:"bytes,2,opt,name=type,proto3" json:"type,omitempty"`
+	QuestionWithLanguage *Question_QuestionWithLanguage `protobuf:"bytes,4,opt,name=questionWithLanguage,proto3" json:"questionWithLanguage,omitempty"`
+	XXX_NoUnkeyedLiteral struct{}                       `json:"-"`
+	XXX_unrecognized     []byte                         `json:"-"`
+	XXX_sizecache        int32                          `json:"-"`
 }
 
 func (m *Question) Reset()         { *m = Question{} }
@@ -72,7 +72,7 @@ func (m *Question) GetType() string {
 	return ""
 }
 
-func (m *Question) GetQuestionWithLanguage() []*Question_QuestionWithLanguage {
+func (m *Question) GetQuestionWithLanguage() *Question_QuestionWithLanguage {
 	if m != nil {
 		return m.QuestionWithLanguage
 	}
@@ -144,7 +144,7 @@ func (m *Question_AnswerOptions) GetHideQuestion() []*Question_HideQuestion {
 
 type Question_OpenOptions struct {
 	DataType             string   `protobuf:"bytes,1,opt,name=dataType,proto3" json:"dataType,omitempty"`
-	Value                string   `protobuf:"bytes,2,opt,name=value,proto3" json:"value,omitempty"`
+	OpenAnswer           string   `protobuf:"bytes,2,opt,name=openAnswer,proto3" json:"openAnswer,omitempty"`
 	Limit                int32    `protobuf:"varint,3,opt,name=limit,proto3" json:"limit,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
@@ -183,9 +183,9 @@ func (m *Question_OpenOptions) GetDataType() string {
 	return ""
 }
 
-func (m *Question_OpenOptions) GetValue() string {
+func (m *Question_OpenOptions) GetOpenAnswer() string {
 	if m != nil {
-		return m.Value
+		return m.OpenAnswer
 	}
 	return ""
 }
@@ -197,19 +197,105 @@ func (m *Question_OpenOptions) GetLimit() int32 {
 	return 0
 }
 
-type Question_MultipleOptions struct {
-	MultipleOptions      []string `protobuf:"bytes,1,rep,name=multipleOptions,proto3" json:"multipleOptions,omitempty"`
-	SelectedOption       string   `protobuf:"bytes,2,opt,name=selectedOption,proto3" json:"selectedOption,omitempty"`
+type Question_Options struct {
+	OptionText           []string `protobuf:"bytes,1,rep,name=optionText,proto3" json:"optionText,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *Question_Options) Reset()         { *m = Question_Options{} }
+func (m *Question_Options) String() string { return proto.CompactTextString(m) }
+func (*Question_Options) ProtoMessage()    {}
+func (*Question_Options) Descriptor() ([]byte, []int) {
+	return fileDescriptor_a40f94eaa8e6ca46, []int{0, 2}
+}
+
+func (m *Question_Options) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_Question_Options.Unmarshal(m, b)
+}
+func (m *Question_Options) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_Question_Options.Marshal(b, m, deterministic)
+}
+func (m *Question_Options) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_Question_Options.Merge(m, src)
+}
+func (m *Question_Options) XXX_Size() int {
+	return xxx_messageInfo_Question_Options.Size(m)
+}
+func (m *Question_Options) XXX_DiscardUnknown() {
+	xxx_messageInfo_Question_Options.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_Question_Options proto.InternalMessageInfo
+
+func (m *Question_Options) GetOptionText() []string {
+	if m != nil {
+		return m.OptionText
+	}
+	return nil
+}
+
+type Question_SingleOption struct {
+	SingleOptions        map[string]*Question_Options `protobuf:"bytes,1,rep,name=singleOptions,proto3" json:"singleOptions,omitempty" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"bytes,2,opt,name=value,proto3"`
+	SelectedOption       string                       `protobuf:"bytes,2,opt,name=selectedOption,proto3" json:"selectedOption,omitempty"`
+	XXX_NoUnkeyedLiteral struct{}                     `json:"-"`
+	XXX_unrecognized     []byte                       `json:"-"`
+	XXX_sizecache        int32                        `json:"-"`
+}
+
+func (m *Question_SingleOption) Reset()         { *m = Question_SingleOption{} }
+func (m *Question_SingleOption) String() string { return proto.CompactTextString(m) }
+func (*Question_SingleOption) ProtoMessage()    {}
+func (*Question_SingleOption) Descriptor() ([]byte, []int) {
+	return fileDescriptor_a40f94eaa8e6ca46, []int{0, 3}
+}
+
+func (m *Question_SingleOption) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_Question_SingleOption.Unmarshal(m, b)
+}
+func (m *Question_SingleOption) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_Question_SingleOption.Marshal(b, m, deterministic)
+}
+func (m *Question_SingleOption) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_Question_SingleOption.Merge(m, src)
+}
+func (m *Question_SingleOption) XXX_Size() int {
+	return xxx_messageInfo_Question_SingleOption.Size(m)
+}
+func (m *Question_SingleOption) XXX_DiscardUnknown() {
+	xxx_messageInfo_Question_SingleOption.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_Question_SingleOption proto.InternalMessageInfo
+
+func (m *Question_SingleOption) GetSingleOptions() map[string]*Question_Options {
+	if m != nil {
+		return m.SingleOptions
+	}
+	return nil
+}
+
+func (m *Question_SingleOption) GetSelectedOption() string {
+	if m != nil {
+		return m.SelectedOption
+	}
+	return ""
+}
+
+type Question_MultipleOptions struct {
+	MultipleOptions      map[string]*Question_Options `protobuf:"bytes,1,rep,name=multipleOptions,proto3" json:"multipleOptions,omitempty" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"bytes,2,opt,name=value,proto3"`
+	SelectedOptions      []string                     `protobuf:"bytes,2,rep,name=selectedOptions,proto3" json:"selectedOptions,omitempty"`
+	XXX_NoUnkeyedLiteral struct{}                     `json:"-"`
+	XXX_unrecognized     []byte                       `json:"-"`
+	XXX_sizecache        int32                        `json:"-"`
 }
 
 func (m *Question_MultipleOptions) Reset()         { *m = Question_MultipleOptions{} }
 func (m *Question_MultipleOptions) String() string { return proto.CompactTextString(m) }
 func (*Question_MultipleOptions) ProtoMessage()    {}
 func (*Question_MultipleOptions) Descriptor() ([]byte, []int) {
-	return fileDescriptor_a40f94eaa8e6ca46, []int{0, 2}
+	return fileDescriptor_a40f94eaa8e6ca46, []int{0, 4}
 }
 
 func (m *Question_MultipleOptions) XXX_Unmarshal(b []byte) error {
@@ -230,34 +316,34 @@ func (m *Question_MultipleOptions) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_Question_MultipleOptions proto.InternalMessageInfo
 
-func (m *Question_MultipleOptions) GetMultipleOptions() []string {
+func (m *Question_MultipleOptions) GetMultipleOptions() map[string]*Question_Options {
 	if m != nil {
 		return m.MultipleOptions
 	}
 	return nil
 }
 
-func (m *Question_MultipleOptions) GetSelectedOption() string {
+func (m *Question_MultipleOptions) GetSelectedOptions() []string {
 	if m != nil {
-		return m.SelectedOption
+		return m.SelectedOptions
 	}
-	return ""
+	return nil
 }
 
 type Question_MatrixOptions struct {
-	Text                 string   `protobuf:"bytes,1,opt,name=text,proto3" json:"text,omitempty"`
-	Options              []string `protobuf:"bytes,2,rep,name=options,proto3" json:"options,omitempty"`
-	SelectedOption       string   `protobuf:"bytes,3,opt,name=selectedOption,proto3" json:"selectedOption,omitempty"`
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
+	Text                 map[string]string            `protobuf:"bytes,1,rep,name=text,proto3" json:"text,omitempty" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"bytes,2,opt,name=value,proto3"`
+	MatrixOptions        map[string]*Question_Options `protobuf:"bytes,2,rep,name=matrixOptions,proto3" json:"matrixOptions,omitempty" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"bytes,2,opt,name=value,proto3"`
+	SelectedOption       string                       `protobuf:"bytes,3,opt,name=selectedOption,proto3" json:"selectedOption,omitempty"`
+	XXX_NoUnkeyedLiteral struct{}                     `json:"-"`
+	XXX_unrecognized     []byte                       `json:"-"`
+	XXX_sizecache        int32                        `json:"-"`
 }
 
 func (m *Question_MatrixOptions) Reset()         { *m = Question_MatrixOptions{} }
 func (m *Question_MatrixOptions) String() string { return proto.CompactTextString(m) }
 func (*Question_MatrixOptions) ProtoMessage()    {}
 func (*Question_MatrixOptions) Descriptor() ([]byte, []int) {
-	return fileDescriptor_a40f94eaa8e6ca46, []int{0, 3}
+	return fileDescriptor_a40f94eaa8e6ca46, []int{0, 5}
 }
 
 func (m *Question_MatrixOptions) XXX_Unmarshal(b []byte) error {
@@ -278,16 +364,16 @@ func (m *Question_MatrixOptions) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_Question_MatrixOptions proto.InternalMessageInfo
 
-func (m *Question_MatrixOptions) GetText() string {
+func (m *Question_MatrixOptions) GetText() map[string]string {
 	if m != nil {
 		return m.Text
 	}
-	return ""
+	return nil
 }
 
-func (m *Question_MatrixOptions) GetOptions() []string {
+func (m *Question_MatrixOptions) GetMatrixOptions() map[string]*Question_Options {
 	if m != nil {
-		return m.Options
+		return m.MatrixOptions
 	}
 	return nil
 }
@@ -311,7 +397,7 @@ func (m *Question_HideQuestion) Reset()         { *m = Question_HideQuestion{} }
 func (m *Question_HideQuestion) String() string { return proto.CompactTextString(m) }
 func (*Question_HideQuestion) ProtoMessage()    {}
 func (*Question_HideQuestion) Descriptor() ([]byte, []int) {
-	return fileDescriptor_a40f94eaa8e6ca46, []int{0, 4}
+	return fileDescriptor_a40f94eaa8e6ca46, []int{0, 6}
 }
 
 func (m *Question_HideQuestion) XXX_Unmarshal(b []byte) error {
@@ -347,9 +433,9 @@ func (m *Question_HideQuestion) GetQuestion() string {
 }
 
 type Question_QuestionWithLanguage struct {
-	Language             string                  `protobuf:"bytes,1,opt,name=language,proto3" json:"language,omitempty"`
-	Text                 string                  `protobuf:"bytes,2,opt,name=text,proto3" json:"text,omitempty"`
-	AnswerOptions        *Question_AnswerOptions `protobuf:"bytes,3,opt,name=answerOptions,proto3" json:"answerOptions,omitempty"`
+	Text                 map[string]string       `protobuf:"bytes,2,rep,name=text,proto3" json:"text,omitempty" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"bytes,2,opt,name=value,proto3"`
+	Image                map[string][]byte       `protobuf:"bytes,3,rep,name=image,proto3" json:"image,omitempty" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"bytes,2,opt,name=value,proto3"`
+	AnswerOptions        *Question_AnswerOptions `protobuf:"bytes,4,opt,name=answerOptions,proto3" json:"answerOptions,omitempty"`
 	XXX_NoUnkeyedLiteral struct{}                `json:"-"`
 	XXX_unrecognized     []byte                  `json:"-"`
 	XXX_sizecache        int32                   `json:"-"`
@@ -359,7 +445,7 @@ func (m *Question_QuestionWithLanguage) Reset()         { *m = Question_Question
 func (m *Question_QuestionWithLanguage) String() string { return proto.CompactTextString(m) }
 func (*Question_QuestionWithLanguage) ProtoMessage()    {}
 func (*Question_QuestionWithLanguage) Descriptor() ([]byte, []int) {
-	return fileDescriptor_a40f94eaa8e6ca46, []int{0, 5}
+	return fileDescriptor_a40f94eaa8e6ca46, []int{0, 7}
 }
 
 func (m *Question_QuestionWithLanguage) XXX_Unmarshal(b []byte) error {
@@ -380,18 +466,18 @@ func (m *Question_QuestionWithLanguage) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_Question_QuestionWithLanguage proto.InternalMessageInfo
 
-func (m *Question_QuestionWithLanguage) GetLanguage() string {
-	if m != nil {
-		return m.Language
-	}
-	return ""
-}
-
-func (m *Question_QuestionWithLanguage) GetText() string {
+func (m *Question_QuestionWithLanguage) GetText() map[string]string {
 	if m != nil {
 		return m.Text
 	}
-	return ""
+	return nil
+}
+
+func (m *Question_QuestionWithLanguage) GetImage() map[string][]byte {
+	if m != nil {
+		return m.Image
+	}
+	return nil
 }
 
 func (m *Question_QuestionWithLanguage) GetAnswerOptions() *Question_AnswerOptions {
@@ -440,6 +526,45 @@ func (m *QuestionID) GetQuestionID() string {
 	return ""
 }
 
+type SurveyID struct {
+	SurveyID             string   `protobuf:"bytes,1,opt,name=surveyID,proto3" json:"surveyID,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *SurveyID) Reset()         { *m = SurveyID{} }
+func (m *SurveyID) String() string { return proto.CompactTextString(m) }
+func (*SurveyID) ProtoMessage()    {}
+func (*SurveyID) Descriptor() ([]byte, []int) {
+	return fileDescriptor_a40f94eaa8e6ca46, []int{2}
+}
+
+func (m *SurveyID) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_SurveyID.Unmarshal(m, b)
+}
+func (m *SurveyID) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_SurveyID.Marshal(b, m, deterministic)
+}
+func (m *SurveyID) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_SurveyID.Merge(m, src)
+}
+func (m *SurveyID) XXX_Size() int {
+	return xxx_messageInfo_SurveyID.Size(m)
+}
+func (m *SurveyID) XXX_DiscardUnknown() {
+	xxx_messageInfo_SurveyID.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_SurveyID proto.InternalMessageInfo
+
+func (m *SurveyID) GetSurveyID() string {
+	if m != nil {
+		return m.SurveyID
+	}
+	return ""
+}
+
 type QuestionArray struct {
 	Questions            []*Question `protobuf:"bytes,1,rep,name=questions,proto3" json:"questions,omitempty"`
 	XXX_NoUnkeyedLiteral struct{}    `json:"-"`
@@ -451,7 +576,7 @@ func (m *QuestionArray) Reset()         { *m = QuestionArray{} }
 func (m *QuestionArray) String() string { return proto.CompactTextString(m) }
 func (*QuestionArray) ProtoMessage()    {}
 func (*QuestionArray) Descriptor() ([]byte, []int) {
-	return fileDescriptor_a40f94eaa8e6ca46, []int{2}
+	return fileDescriptor_a40f94eaa8e6ca46, []int{3}
 }
 
 func (m *QuestionArray) XXX_Unmarshal(b []byte) error {
@@ -479,6 +604,45 @@ func (m *QuestionArray) GetQuestions() []*Question {
 	return nil
 }
 
+type SurveyArray struct {
+	Surveys              []*SurveyData `protobuf:"bytes,1,rep,name=surveys,proto3" json:"surveys,omitempty"`
+	XXX_NoUnkeyedLiteral struct{}      `json:"-"`
+	XXX_unrecognized     []byte        `json:"-"`
+	XXX_sizecache        int32         `json:"-"`
+}
+
+func (m *SurveyArray) Reset()         { *m = SurveyArray{} }
+func (m *SurveyArray) String() string { return proto.CompactTextString(m) }
+func (*SurveyArray) ProtoMessage()    {}
+func (*SurveyArray) Descriptor() ([]byte, []int) {
+	return fileDescriptor_a40f94eaa8e6ca46, []int{4}
+}
+
+func (m *SurveyArray) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_SurveyArray.Unmarshal(m, b)
+}
+func (m *SurveyArray) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_SurveyArray.Marshal(b, m, deterministic)
+}
+func (m *SurveyArray) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_SurveyArray.Merge(m, src)
+}
+func (m *SurveyArray) XXX_Size() int {
+	return xxx_messageInfo_SurveyArray.Size(m)
+}
+func (m *SurveyArray) XXX_DiscardUnknown() {
+	xxx_messageInfo_SurveyArray.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_SurveyArray proto.InternalMessageInfo
+
+func (m *SurveyArray) GetSurveys() []*SurveyData {
+	if m != nil {
+		return m.Surveys
+	}
+	return nil
+}
+
 type EmptySurvey struct {
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
@@ -489,7 +653,7 @@ func (m *EmptySurvey) Reset()         { *m = EmptySurvey{} }
 func (m *EmptySurvey) String() string { return proto.CompactTextString(m) }
 func (*EmptySurvey) ProtoMessage()    {}
 func (*EmptySurvey) Descriptor() ([]byte, []int) {
-	return fileDescriptor_a40f94eaa8e6ca46, []int{3}
+	return fileDescriptor_a40f94eaa8e6ca46, []int{5}
 }
 
 func (m *EmptySurvey) XXX_Unmarshal(b []byte) error {
@@ -513,7 +677,9 @@ var xxx_messageInfo_EmptySurvey proto.InternalMessageInfo
 type SurveyData struct {
 	Id                   string      `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
 	Description          string      `protobuf:"bytes,2,opt,name=description,proto3" json:"description,omitempty"`
-	Questions            []*Question `protobuf:"bytes,3,rep,name=questions,proto3" json:"questions,omitempty"`
+	Type                 string      `protobuf:"bytes,3,opt,name=type,proto3" json:"type,omitempty"`
+	Study                string      `protobuf:"bytes,4,opt,name=study,proto3" json:"study,omitempty"`
+	Questions            []*Question `protobuf:"bytes,5,rep,name=questions,proto3" json:"questions,omitempty"`
 	XXX_NoUnkeyedLiteral struct{}    `json:"-"`
 	XXX_unrecognized     []byte      `json:"-"`
 	XXX_sizecache        int32       `json:"-"`
@@ -523,7 +689,7 @@ func (m *SurveyData) Reset()         { *m = SurveyData{} }
 func (m *SurveyData) String() string { return proto.CompactTextString(m) }
 func (*SurveyData) ProtoMessage()    {}
 func (*SurveyData) Descriptor() ([]byte, []int) {
-	return fileDescriptor_a40f94eaa8e6ca46, []int{4}
+	return fileDescriptor_a40f94eaa8e6ca46, []int{6}
 }
 
 func (m *SurveyData) XXX_Unmarshal(b []byte) error {
@@ -558,6 +724,20 @@ func (m *SurveyData) GetDescription() string {
 	return ""
 }
 
+func (m *SurveyData) GetType() string {
+	if m != nil {
+		return m.Type
+	}
+	return ""
+}
+
+func (m *SurveyData) GetStudy() string {
+	if m != nil {
+		return m.Study
+	}
+	return ""
+}
+
 func (m *SurveyData) GetQuestions() []*Question {
 	if m != nil {
 		return m.Questions
@@ -569,12 +749,22 @@ func init() {
 	proto.RegisterType((*Question)(nil), "api.Question")
 	proto.RegisterType((*Question_AnswerOptions)(nil), "api.Question.AnswerOptions")
 	proto.RegisterType((*Question_OpenOptions)(nil), "api.Question.OpenOptions")
+	proto.RegisterType((*Question_Options)(nil), "api.Question.Options")
+	proto.RegisterType((*Question_SingleOption)(nil), "api.Question.SingleOption")
+	proto.RegisterMapType((map[string]*Question_Options)(nil), "api.Question.SingleOption.SingleOptionsEntry")
 	proto.RegisterType((*Question_MultipleOptions)(nil), "api.Question.MultipleOptions")
+	proto.RegisterMapType((map[string]*Question_Options)(nil), "api.Question.MultipleOptions.MultipleOptionsEntry")
 	proto.RegisterType((*Question_MatrixOptions)(nil), "api.Question.MatrixOptions")
+	proto.RegisterMapType((map[string]*Question_Options)(nil), "api.Question.MatrixOptions.MatrixOptionsEntry")
+	proto.RegisterMapType((map[string]string)(nil), "api.Question.MatrixOptions.TextEntry")
 	proto.RegisterType((*Question_HideQuestion)(nil), "api.Question.HideQuestion")
 	proto.RegisterType((*Question_QuestionWithLanguage)(nil), "api.Question.QuestionWithLanguage")
+	proto.RegisterMapType((map[string][]byte)(nil), "api.Question.QuestionWithLanguage.ImageEntry")
+	proto.RegisterMapType((map[string]string)(nil), "api.Question.QuestionWithLanguage.TextEntry")
 	proto.RegisterType((*QuestionID)(nil), "api.QuestionID")
+	proto.RegisterType((*SurveyID)(nil), "api.SurveyID")
 	proto.RegisterType((*QuestionArray)(nil), "api.QuestionArray")
+	proto.RegisterType((*SurveyArray)(nil), "api.SurveyArray")
 	proto.RegisterType((*EmptySurvey)(nil), "api.EmptySurvey")
 	proto.RegisterType((*SurveyData)(nil), "api.SurveyData")
 }
@@ -582,42 +772,60 @@ func init() {
 func init() { proto.RegisterFile("survey.proto", fileDescriptor_a40f94eaa8e6ca46) }
 
 var fileDescriptor_a40f94eaa8e6ca46 = []byte{
-	// 558 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x7c, 0x54, 0xcd, 0x8e, 0xd3, 0x3c,
-	0x14, 0x55, 0x92, 0xf9, 0xeb, 0x4d, 0xd3, 0x7e, 0xba, 0xea, 0x22, 0x9f, 0x11, 0xa8, 0xca, 0x02,
-	0x55, 0x02, 0x2a, 0xd4, 0x59, 0xb0, 0x00, 0x21, 0x55, 0x14, 0x95, 0x91, 0x40, 0x23, 0xcc, 0xdf,
-	0xda, 0x34, 0xd6, 0x8c, 0x45, 0xda, 0x66, 0x12, 0x77, 0x98, 0x3e, 0x01, 0xe2, 0x0d, 0x78, 0x00,
-	0x1e, 0x14, 0xc5, 0x89, 0x53, 0x3b, 0x09, 0xec, 0x7c, 0xae, 0xcf, 0xb9, 0xc7, 0xf7, 0x47, 0x86,
-	0x7e, 0xbe, 0xcb, 0x6e, 0xf9, 0x7e, 0x9a, 0x66, 0x5b, 0xb9, 0x45, 0x8f, 0xa5, 0x22, 0xfa, 0x7d,
-	0x0a, 0x67, 0xef, 0x77, 0x3c, 0x97, 0x62, 0xbb, 0xc1, 0x01, 0xb8, 0x22, 0x0e, 0x9d, 0xb1, 0x33,
-	0xe9, 0x51, 0x57, 0xc4, 0x88, 0x70, 0x24, 0xf7, 0x29, 0x0f, 0x5d, 0x15, 0x51, 0x67, 0xfc, 0x0c,
-	0xa3, 0x9b, 0x8a, 0xff, 0x45, 0xc8, 0xeb, 0xb7, 0x6c, 0x73, 0xb5, 0x63, 0x57, 0x3c, 0xf4, 0xc6,
-	0xde, 0xc4, 0x9f, 0x45, 0x53, 0x96, 0x8a, 0xa9, 0x4e, 0x58, 0x1f, 0x4c, 0x26, 0xed, 0xd4, 0x93,
-	0x5f, 0x2e, 0x04, 0xf3, 0x4d, 0xfe, 0x9d, 0x67, 0x97, 0x69, 0x71, 0x99, 0xe3, 0x73, 0xf0, 0xb7,
-	0x29, 0xdf, 0x54, 0x50, 0x3d, 0xcb, 0x9f, 0xfd, 0x6f, 0x1b, 0x5c, 0x1e, 0x08, 0xd4, 0x64, 0xe3,
-	0x12, 0x86, 0xeb, 0x5d, 0x22, 0x45, 0x9a, 0x70, 0x9d, 0xc0, 0x55, 0x09, 0xee, 0xdb, 0x09, 0xde,
-	0xd9, 0x24, 0xda, 0x54, 0xe1, 0x1c, 0x82, 0x35, 0x93, 0x99, 0xb8, 0xd3, 0x69, 0xca, 0x42, 0xef,
-	0x35, 0xd2, 0x98, 0x14, 0x6a, 0x2b, 0xf0, 0x25, 0xf4, 0xaf, 0x45, 0xcc, 0x35, 0x39, 0x3c, 0x52,
-	0x19, 0x88, 0x9d, 0xe1, 0x8d, 0xc1, 0xa0, 0x16, 0x9f, 0x7c, 0x02, 0xdf, 0xa8, 0x13, 0x09, 0x9c,
-	0xc5, 0x4c, 0xb2, 0x8f, 0xc5, 0x64, 0xca, 0x59, 0xd5, 0x18, 0x47, 0x70, 0x7c, 0xcb, 0x92, 0x9d,
-	0x1e, 0x59, 0x09, 0x8a, 0x68, 0x22, 0xd6, 0x42, 0x86, 0xde, 0xd8, 0x99, 0x1c, 0xd3, 0x12, 0x90,
-	0x15, 0x0c, 0x1b, 0xd5, 0xe3, 0xa4, 0xdd, 0x35, 0x67, 0xec, 0x4d, 0x7a, 0xed, 0xb6, 0x3c, 0x84,
-	0x41, 0xce, 0x13, 0xbe, 0x92, 0x3c, 0x2e, 0x43, 0x95, 0x63, 0x23, 0x4a, 0x38, 0x04, 0x56, 0x6f,
-	0xd4, 0x4e, 0xf1, 0x3b, 0x59, 0xbd, 0x5c, 0x9d, 0x31, 0x84, 0xd3, 0x6d, 0x3d, 0xa4, 0xc2, 0x4e,
-	0xc3, 0x0e, 0x1b, 0xaf, 0xd3, 0x86, 0x42, 0xdf, 0x6c, 0x60, 0x87, 0xce, 0xe9, 0xd2, 0x15, 0xbd,
-	0xd4, 0xdb, 0x58, 0x15, 0x50, 0x63, 0xf2, 0xd3, 0x81, 0x51, 0xd7, 0x02, 0x17, 0xa2, 0x44, 0xaf,
-	0x7d, 0x35, 0x00, 0x8d, 0xeb, 0xf2, 0x5c, 0xa3, 0xbc, 0x39, 0x04, 0xcc, 0xdc, 0x6c, 0x55, 0x43,
-	0x6b, 0x85, 0xac, 0xe5, 0xa7, 0xb6, 0x22, 0x7a, 0x0c, 0xa0, 0x89, 0x17, 0x0b, 0x7c, 0x00, 0x70,
-	0x53, 0xa3, 0xea, 0x09, 0x46, 0x24, 0x7a, 0x01, 0x81, 0x66, 0xcf, 0xb3, 0x8c, 0xed, 0xf1, 0x11,
-	0xf4, 0xf4, 0x75, 0x39, 0x51, 0x7f, 0x16, 0x58, 0xee, 0xf4, 0x70, 0x1f, 0x05, 0xe0, 0xbf, 0x5e,
-	0xa7, 0x72, 0xff, 0x41, 0x7d, 0x16, 0xd1, 0x37, 0x80, 0xf2, 0xb4, 0x60, 0x92, 0xb5, 0xbe, 0x88,
-	0x31, 0xf8, 0x31, 0xcf, 0x57, 0x99, 0x30, 0x97, 0xc0, 0x0c, 0xd9, 0xde, 0xde, 0xbf, 0xbd, 0x67,
-	0x3f, 0x5c, 0x38, 0x29, 0xdd, 0xf0, 0x29, 0xf4, 0x5f, 0x65, 0x9c, 0x49, 0x5e, 0xe1, 0xa1, 0x12,
-	0x1d, 0x9e, 0x42, 0x9a, 0x01, 0x9c, 0xc2, 0xa0, 0x54, 0xd4, 0x6b, 0x60, 0x1b, 0x11, 0x1b, 0xe2,
-	0x39, 0x0c, 0x16, 0x3c, 0xe1, 0x06, 0x7f, 0x68, 0x11, 0x2e, 0x16, 0xe4, 0x3f, 0x15, 0x30, 0xda,
-	0x81, 0x4f, 0xc0, 0x5f, 0x72, 0xf9, 0x77, 0x45, 0xc3, 0xe3, 0x19, 0x0c, 0x97, 0x5c, 0xce, 0x93,
-	0x44, 0x47, 0x72, 0x6c, 0xe5, 0x24, 0x68, 0x69, 0xd4, 0xc8, 0xbe, 0x9e, 0xa8, 0x4f, 0xfa, 0xfc,
-	0x4f, 0x00, 0x00, 0x00, 0xff, 0xff, 0x2b, 0x8c, 0xfe, 0x60, 0xb4, 0x05, 0x00, 0x00,
+	// 837 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xac, 0x56, 0xdd, 0x6a, 0xdb, 0x4a,
+	0x10, 0x46, 0x92, 0x9d, 0xc4, 0x23, 0xcb, 0x0e, 0x8b, 0x0f, 0xf8, 0xe8, 0x70, 0x0e, 0x46, 0x70,
+	0x82, 0x43, 0x13, 0xb7, 0x38, 0x17, 0x49, 0x7f, 0x28, 0x35, 0x71, 0x70, 0x0d, 0x2d, 0xa1, 0x4a,
+	0x68, 0x28, 0x14, 0x8a, 0x1a, 0x2d, 0x89, 0xa8, 0x6c, 0x2b, 0xd2, 0x3a, 0x8d, 0x5f, 0xa3, 0x50,
+	0x28, 0x7d, 0xad, 0xde, 0xf5, 0xba, 0x8f, 0xd0, 0x07, 0x28, 0xbb, 0xab, 0x95, 0x77, 0x25, 0xd5,
+	0x81, 0x92, 0xbb, 0x9d, 0xd1, 0x7c, 0x9f, 0xe6, 0x9b, 0x99, 0x1d, 0x09, 0xea, 0xc9, 0x3c, 0xbe,
+	0xc6, 0x8b, 0x5e, 0x14, 0xcf, 0xc8, 0x0c, 0x19, 0x5e, 0x14, 0x38, 0x9f, 0x1a, 0xb0, 0xf1, 0x6a,
+	0x8e, 0x13, 0x12, 0xcc, 0xa6, 0xa8, 0x01, 0x7a, 0xe0, 0xb7, 0xb5, 0x8e, 0xd6, 0xad, 0xb9, 0x7a,
+	0xe0, 0x23, 0x04, 0x15, 0xb2, 0x88, 0x70, 0x5b, 0x67, 0x1e, 0x76, 0x46, 0xaf, 0xa1, 0x75, 0x95,
+	0xc6, 0x9f, 0x05, 0xe4, 0xf2, 0x85, 0x37, 0xbd, 0x98, 0x7b, 0x17, 0xb8, 0x5d, 0xe9, 0x68, 0x5d,
+	0xb3, 0xef, 0xf4, 0xbc, 0x28, 0xe8, 0x09, 0xc2, 0xec, 0x20, 0x47, 0xba, 0xa5, 0x78, 0xfb, 0x8b,
+	0x0e, 0xd6, 0x60, 0x9a, 0x7c, 0xc4, 0xf1, 0x71, 0x44, 0x1f, 0x26, 0xe8, 0x31, 0x98, 0xb3, 0x08,
+	0x4f, 0x53, 0x93, 0xa5, 0x65, 0xf6, 0xff, 0x56, 0x5f, 0x70, 0xbc, 0x0c, 0x70, 0xe5, 0x68, 0x34,
+	0x82, 0xe6, 0x64, 0x1e, 0x92, 0x20, 0x0a, 0xb1, 0x20, 0xd0, 0x19, 0xc1, 0xbf, 0x2a, 0xc1, 0x4b,
+	0x35, 0xc8, 0xcd, 0xa3, 0xd0, 0x00, 0xac, 0x89, 0x47, 0xe2, 0xe0, 0x46, 0xd0, 0x18, 0x1d, 0xa3,
+	0x6b, 0xf6, 0xff, 0xc9, 0xd1, 0xc8, 0x21, 0xae, 0x8a, 0x40, 0x4f, 0xa1, 0x7e, 0x19, 0xf8, 0x58,
+	0x04, 0xb7, 0x2b, 0x8c, 0xc1, 0x56, 0x19, 0x9e, 0x4b, 0x11, 0xae, 0x12, 0x6f, 0xbf, 0x03, 0x53,
+	0xd2, 0x89, 0x6c, 0xd8, 0xf0, 0x3d, 0xe2, 0x9d, 0xd2, 0xce, 0xf0, 0x5e, 0x65, 0x36, 0xfa, 0x0f,
+	0x80, 0x56, 0x81, 0x17, 0x32, 0xed, 0x9b, 0xe4, 0x41, 0x2d, 0xa8, 0x86, 0xc1, 0x24, 0x20, 0x6d,
+	0xa3, 0xa3, 0x75, 0xab, 0x2e, 0x37, 0xec, 0x6d, 0x58, 0x17, 0xe4, 0x8c, 0x80, 0x1e, 0x4f, 0xf1,
+	0x0d, 0x69, 0x6b, 0x1d, 0x83, 0x13, 0x08, 0x8f, 0xfd, 0x43, 0x83, 0xfa, 0x49, 0x30, 0xbd, 0x10,
+	0x05, 0x42, 0x27, 0x60, 0x25, 0x92, 0x9d, 0x30, 0x8c, 0xd9, 0xdf, 0x55, 0xd5, 0xc9, 0x10, 0xc5,
+	0x48, 0x8e, 0xa6, 0x24, 0x5e, 0xb8, 0x2a, 0x07, 0xda, 0x82, 0x46, 0x82, 0x43, 0x7c, 0x4e, 0xb0,
+	0xcf, 0x5d, 0xa9, 0x94, 0x9c, 0xd7, 0x3e, 0x03, 0x54, 0x24, 0x43, 0x9b, 0x60, 0x7c, 0xc0, 0x8b,
+	0xb4, 0x36, 0xf4, 0x88, 0xee, 0x41, 0xf5, 0xda, 0x0b, 0xe7, 0x38, 0x9d, 0x81, 0xbf, 0xf2, 0x43,
+	0xc4, 0xdb, 0xc6, 0x63, 0x1e, 0xe9, 0x07, 0x9a, 0xfd, 0x53, 0x83, 0x66, 0x6e, 0x34, 0xd0, 0xdb,
+	0xe2, 0x48, 0x71, 0xad, 0xfd, 0x95, 0x23, 0x95, 0xb7, 0xb9, 0xe0, 0xc2, 0x9c, 0x75, 0xa1, 0xa9,
+	0x8a, 0xa3, 0x03, 0x4b, 0xab, 0x9f, 0x77, 0xdb, 0x6f, 0xa0, 0x55, 0x46, 0x79, 0x17, 0xb2, 0xbf,
+	0xeb, 0x60, 0x29, 0xa3, 0x8c, 0x1e, 0x42, 0x85, 0x88, 0x49, 0x30, 0xfb, 0xff, 0xaf, 0x98, 0xfa,
+	0x1e, 0x9d, 0x0f, 0x2e, 0x8e, 0x41, 0xd0, 0x69, 0xfe, 0xe6, 0xe8, 0x8c, 0xa3, 0xb7, 0x8a, 0x43,
+	0xb1, 0xd2, 0xd1, 0x50, 0x2f, 0x53, 0x71, 0x34, 0x8c, 0xd2, 0xd1, 0xd8, 0x87, 0x5a, 0x96, 0x50,
+	0x49, 0x69, 0x5a, 0x72, 0x69, 0x6a, 0x72, 0x0d, 0xce, 0x00, 0x15, 0xb3, 0xb8, 0x8b, 0xe2, 0xba,
+	0x50, 0x97, 0x2f, 0x79, 0x89, 0x12, 0xad, 0x4c, 0x09, 0xbd, 0xef, 0x62, 0x63, 0xa6, 0xd9, 0x66,
+	0xb6, 0xfd, 0x4d, 0x87, 0x56, 0xd9, 0x92, 0x45, 0xcf, 0xd2, 0xbe, 0xf1, 0x9a, 0xef, 0xdc, 0xbe,
+	0x96, 0x0b, 0xed, 0x3b, 0x84, 0x6a, 0x30, 0xa1, 0x9b, 0xdd, 0x28, 0xbb, 0xd0, 0xa5, 0x14, 0x63,
+	0x1a, 0xcf, 0x39, 0x38, 0x96, 0x6e, 0x4f, 0x4f, 0x5e, 0xea, 0xe9, 0x67, 0x22, 0xb7, 0x3d, 0x95,
+	0xbd, 0xef, 0xaa, 0x88, 0x3f, 0x6f, 0xe4, 0x01, 0xc0, 0x32, 0xa1, 0xdb, 0x90, 0x75, 0x09, 0xe9,
+	0xec, 0x00, 0x88, 0xdc, 0xc6, 0x43, 0xba, 0x12, 0xaf, 0x32, 0x2b, 0x25, 0x90, 0x3c, 0xce, 0x16,
+	0x6c, 0x9c, 0xb0, 0xef, 0xea, 0x78, 0x48, 0x7b, 0x95, 0xa4, 0x67, 0xb1, 0x9b, 0x85, 0xed, 0x3c,
+	0x01, 0x4b, 0xb0, 0x0e, 0xe2, 0xd8, 0xa3, 0x13, 0x54, 0x13, 0x34, 0x62, 0x95, 0x58, 0x4a, 0x61,
+	0xdc, 0xe5, 0x73, 0xe7, 0x00, 0x4c, 0xfe, 0x16, 0x8e, 0xdd, 0x86, 0x75, 0x4e, 0x2c, 0x90, 0x4d,
+	0x86, 0xe4, 0x21, 0x43, 0x8f, 0x78, 0xae, 0x78, 0xee, 0x58, 0x60, 0x1e, 0x4d, 0x22, 0xb2, 0xe0,
+	0xcf, 0x9c, 0xcf, 0x1a, 0xc0, 0x32, 0xac, 0xf0, 0xcd, 0xef, 0x80, 0xe9, 0xe3, 0xe4, 0x3c, 0x0e,
+	0xe4, 0xbd, 0x2b, 0xbb, 0xb2, 0xbf, 0x02, 0x43, 0xfa, 0x2b, 0x68, 0x41, 0x35, 0x21, 0x73, 0x7f,
+	0xc1, 0xfa, 0x5b, 0x73, 0xb9, 0xa1, 0x0a, 0xac, 0xae, 0x16, 0xd8, 0xff, 0x6a, 0xc0, 0x1a, 0xcf,
+	0x0b, 0x3d, 0x80, 0xfa, 0x61, 0x8c, 0x3d, 0x82, 0x53, 0x3b, 0xaf, 0xcd, 0xce, 0x3b, 0xd0, 0x7d,
+	0xa8, 0x0f, 0x71, 0x88, 0x33, 0x84, 0x25, 0x05, 0x8c, 0x87, 0xf6, 0x26, 0x33, 0xa5, 0x2a, 0xd0,
+	0xd4, 0x46, 0x98, 0x94, 0x47, 0x17, 0xd8, 0xf7, 0xc0, 0x1a, 0x61, 0x32, 0x08, 0x43, 0xee, 0x4b,
+	0x50, 0x81, 0x2f, 0x7d, 0x83, 0xdc, 0xa1, 0x1e, 0x34, 0xb8, 0x88, 0xec, 0xc2, 0xab, 0xda, 0x6d,
+	0xd5, 0x44, 0x7b, 0xd0, 0xe0, 0x12, 0x32, 0x4f, 0x53, 0x09, 0x28, 0x95, 0xb1, 0x0b, 0xe6, 0x08,
+	0x93, 0xdf, 0x23, 0x72, 0xef, 0xd8, 0x87, 0x26, 0x17, 0x22, 0x3c, 0x65, 0x52, 0x90, 0x82, 0x61,
+	0x62, 0xde, 0xaf, 0xb1, 0x5f, 0xc6, 0xbd, 0x5f, 0x01, 0x00, 0x00, 0xff, 0xff, 0x46, 0xdb, 0x25,
+	0x6b, 0x42, 0x0a, 0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -633,6 +841,9 @@ const _ = grpc.SupportPackageIsVersion4
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://godoc.org/google.golang.org/grpc#ClientConn.NewStream.
 type SurveyClient interface {
 	CreateSurvey(ctx context.Context, in *SurveyData, opts ...grpc.CallOption) (*SurveyData, error)
+	DeleteSurvey(ctx context.Context, in *SurveyID, opts ...grpc.CallOption) (*EmptySurvey, error)
+	GetSurvey(ctx context.Context, in *SurveyID, opts ...grpc.CallOption) (*SurveyData, error)
+	GetAllSurveys(ctx context.Context, in *EmptySurvey, opts ...grpc.CallOption) (*SurveyArray, error)
 	CreateQuestion(ctx context.Context, in *Question, opts ...grpc.CallOption) (*Question, error)
 	DeleteQuestion(ctx context.Context, in *QuestionID, opts ...grpc.CallOption) (*EmptySurvey, error)
 	GetQuestion(ctx context.Context, in *QuestionID, opts ...grpc.CallOption) (*Question, error)
@@ -650,6 +861,33 @@ func NewSurveyClient(cc *grpc.ClientConn) SurveyClient {
 func (c *surveyClient) CreateSurvey(ctx context.Context, in *SurveyData, opts ...grpc.CallOption) (*SurveyData, error) {
 	out := new(SurveyData)
 	err := c.cc.Invoke(ctx, "/api.Survey/CreateSurvey", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *surveyClient) DeleteSurvey(ctx context.Context, in *SurveyID, opts ...grpc.CallOption) (*EmptySurvey, error) {
+	out := new(EmptySurvey)
+	err := c.cc.Invoke(ctx, "/api.Survey/DeleteSurvey", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *surveyClient) GetSurvey(ctx context.Context, in *SurveyID, opts ...grpc.CallOption) (*SurveyData, error) {
+	out := new(SurveyData)
+	err := c.cc.Invoke(ctx, "/api.Survey/GetSurvey", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *surveyClient) GetAllSurveys(ctx context.Context, in *EmptySurvey, opts ...grpc.CallOption) (*SurveyArray, error) {
+	out := new(SurveyArray)
+	err := c.cc.Invoke(ctx, "/api.Survey/GetAllSurveys", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -695,6 +933,9 @@ func (c *surveyClient) GetAllQuestions(ctx context.Context, in *EmptySurvey, opt
 // SurveyServer is the server API for Survey service.
 type SurveyServer interface {
 	CreateSurvey(context.Context, *SurveyData) (*SurveyData, error)
+	DeleteSurvey(context.Context, *SurveyID) (*EmptySurvey, error)
+	GetSurvey(context.Context, *SurveyID) (*SurveyData, error)
+	GetAllSurveys(context.Context, *EmptySurvey) (*SurveyArray, error)
 	CreateQuestion(context.Context, *Question) (*Question, error)
 	DeleteQuestion(context.Context, *QuestionID) (*EmptySurvey, error)
 	GetQuestion(context.Context, *QuestionID) (*Question, error)
@@ -707,6 +948,15 @@ type UnimplementedSurveyServer struct {
 
 func (*UnimplementedSurveyServer) CreateSurvey(ctx context.Context, req *SurveyData) (*SurveyData, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateSurvey not implemented")
+}
+func (*UnimplementedSurveyServer) DeleteSurvey(ctx context.Context, req *SurveyID) (*EmptySurvey, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeleteSurvey not implemented")
+}
+func (*UnimplementedSurveyServer) GetSurvey(ctx context.Context, req *SurveyID) (*SurveyData, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetSurvey not implemented")
+}
+func (*UnimplementedSurveyServer) GetAllSurveys(ctx context.Context, req *EmptySurvey) (*SurveyArray, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetAllSurveys not implemented")
 }
 func (*UnimplementedSurveyServer) CreateQuestion(ctx context.Context, req *Question) (*Question, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateQuestion not implemented")
@@ -739,6 +989,60 @@ func _Survey_CreateSurvey_Handler(srv interface{}, ctx context.Context, dec func
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(SurveyServer).CreateSurvey(ctx, req.(*SurveyData))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Survey_DeleteSurvey_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(SurveyID)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(SurveyServer).DeleteSurvey(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/api.Survey/DeleteSurvey",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(SurveyServer).DeleteSurvey(ctx, req.(*SurveyID))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Survey_GetSurvey_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(SurveyID)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(SurveyServer).GetSurvey(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/api.Survey/GetSurvey",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(SurveyServer).GetSurvey(ctx, req.(*SurveyID))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Survey_GetAllSurveys_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(EmptySurvey)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(SurveyServer).GetAllSurveys(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/api.Survey/GetAllSurveys",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(SurveyServer).GetAllSurveys(ctx, req.(*EmptySurvey))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -822,6 +1126,18 @@ var _Survey_serviceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "CreateSurvey",
 			Handler:    _Survey_CreateSurvey_Handler,
+		},
+		{
+			MethodName: "DeleteSurvey",
+			Handler:    _Survey_DeleteSurvey_Handler,
+		},
+		{
+			MethodName: "GetSurvey",
+			Handler:    _Survey_GetSurvey_Handler,
+		},
+		{
+			MethodName: "GetAllSurveys",
+			Handler:    _Survey_GetAllSurveys_Handler,
 		},
 		{
 			MethodName: "CreateQuestion",
