@@ -25,7 +25,7 @@ import (
 	pb "StudyManagement/api"
 	"context"
 	"fmt"
-
+	"github.com/robfig/cron"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -56,7 +56,14 @@ func main() {
 	}
 	s := grpc.NewServer()
 	pb.RegisterStudyServer(s, &server{})
-	assignWeeklySurvey()
+	/*c := gocron.NewScheduler()
+	c.Every(1).Minute().Do(assignWeeklySurvey)
+	<- c.Start()*/
+	c := cron.New()
+	c.AddFunc("@every 1m", assignWeeklySurvey)
+	c.Start()
+	//c.Stop()
+	//assignWeeklySurvey()
 	if err := s.Serve(lis); err != nil {
 		log.Fatalf("failed to serve: %v", err )
 	}
@@ -186,7 +193,6 @@ func assignWeeklySurvey() {
 	var users[] string
 	documents := getActiveStudies("active")
 
-	for true{
 		for _, document := range documents{
 			users = document.Users
 			var timelysurvey, monthlySurvey Survey
@@ -237,9 +243,6 @@ func assignWeeklySurvey() {
 			}
 
 		}
-		time.Sleep(time.Minute)
-	}
-
 
 }
 
