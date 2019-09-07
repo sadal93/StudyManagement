@@ -6,9 +6,10 @@ message Question{
 
     message AnswerOptions{
         OpenOptions openOptions = 1;
-        MultipleOptions multipleOptions = 2;
-        repeated MatrixOptions matrixOptions = 3;
-        repeated HideQuestion hideQuestion = 4;
+        SingleOption singleOption = 2;
+        MultipleOptions multipleOptions = 3;
+        repeated MatrixOptions matrixOptions = 4;
+        repeated HideQuestion hideQuestion = 5;
     }
 
     message OpenOptions{
@@ -22,18 +23,18 @@ message Question{
     }
 
     message SingleOption{
-        map<string, Options> singleOptions = 1;
+        map<string, Options> options = 1;
         string selectedOption = 2;
     }
 
     message MultipleOptions{
-        map<string, Options> multipleOptions = 1;
+        map<string, Options> options = 1;
         repeated string selectedOptions = 2;
     }
 
     message MatrixOptions{
         map <string, string> text = 1;
-        map<string, Options> matrixOptions = 2;
+        map<string, Options> options = 2;
         string selectedOption = 3;
     }
 
@@ -81,18 +82,4 @@ message SurveyData{
     string type = 3;
     string study = 4;
     repeated Question questions = 5;
-}
-
-
-service Survey{
-    rpc CreateSurvey (SurveyData) returns (SurveyData);
-    rpc DeleteSurvey (SurveyID) returns (EmptySurvey);
-    rpc GetSurvey (SurveyID) returns (SurveyData);
-    rpc GetAllSurveys (EmptySurvey) returns (SurveyArray);
-
-    rpc CreateQuestion (Question) returns (Question);
-    rpc DeleteQuestion (QuestionID) returns (EmptySurvey);
-    rpc GetQuestion (QuestionID) returns (Question);
-    rpc GetAllQuestions (EmptySurvey) returns (QuestionArray);
-
 }

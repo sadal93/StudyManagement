@@ -25,7 +25,6 @@ import (
 	pb "StudyManagement/api"
 	"context"
 	"fmt"
-	"github.com/robfig/cron"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -59,9 +58,9 @@ func main() {
 	/*c := gocron.NewScheduler()
 	c.Every(1).Minute().Do(assignWeeklySurvey)
 	<- c.Start()*/
-	c := cron.New()
-	c.AddFunc("@every 1m", assignWeeklySurvey)
-	c.Start()
+	/*c := cron.New()
+	c.AddFunc("@every 1m", assignTimelySurvey)
+	c.Start()*/
 	//c.Stop()
 	//assignWeeklySurvey()
 	if err := s.Serve(lis); err != nil {
@@ -71,7 +70,9 @@ func main() {
 
 func (s *server)  CreateStudy(ctx context.Context, study *pb.StudyMetaData) (*pb.StudyMetaData, error) {
 
-	studyDoc:= Study{primitive.NewObjectID(),study.Name, study.Description, time.Now().UnixNano() / 1000000, study.Status,study.Users}
+	users := []string{""}
+
+	studyDoc:= Study{primitive.NewObjectID(),study.Name, study.Description, time.Now().UnixNano() / 1000000, "inactive",users}
 	createStudyDocument(studyDoc)
 
 	log.Printf("Study Created: %v", study.Name)
@@ -189,7 +190,57 @@ func (s *server) LeaveStudy(ctx context.Context, userStudy *pb.SignUpData) (*pb.
 	return &pb.Empty{}, nil
 }
 
-func assignWeeklySurvey() {
+func (s *server) StartStudy(ctx context.Context, study *pb.StudyMetaData) (*pb.StudyMetaData, error) {
+	var result Study
+	objectID, err := primitive.ObjectIDFromHex(study.Id)
+	fmt.Println(objectID)
+	filter := bson.M{"_id": objectID}
+
+	err = studyCollection.FindOne(context.TODO(), filter).Decode(&result)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	update := bson.M{
+		"$set": bson.M{
+			"status": "active"}}
+
+	updateResult, err := studyCollection.UpdateOne(context.TODO(), filter, update)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	fmt.Printf("Matched %v documents and updated %v documents.\n", updateResult.MatchedCount, updateResult.ModifiedCount)
+
+	return &pb.StudyMetaData{Id: study.Id, Name: study.Name, Description: study.Description, StartDate: study.StartDate, Status: study.Status, Users: study.Users}, nil
+}
+
+func (s *server) FinishStudy(ctx context.Context, study *pb.StudyMetaData) (*pb.StudyMetaData, error) {
+	var result Study
+	objectID, err := primitive.ObjectIDFromHex(study.Id)
+	fmt.Println(objectID)
+	filter := bson.M{"_id": objectID}
+
+	err = studyCollection.FindOne(context.TODO(), filter).Decode(&result)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	update := bson.M{
+		"$set": bson.M{
+			"status": "finished"}}
+
+	updateResult, err := studyCollection.UpdateOne(context.TODO(), filter, update)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	fmt.Printf("Matched %v documents and updated %v documents.\n", updateResult.MatchedCount, updateResult.ModifiedCount)
+
+	return &pb.StudyMetaData{Id: study.Id, Name: study.Name, Description: study.Description, StartDate: study.StartDate, Status: study.Status, Users: study.Users}, nil
+}
+
+func assignTimelySurvey() {
 	var users[] string
 	documents := getActiveStudies("active")
 
@@ -287,7 +338,7 @@ func (s *server) DeleteTrigger(ctx context.Context, trigger *pb.Trigger) (*pb.Em
 	return &pb.Empty{}, nil
 }
 
-func (s *server)  CheckTrigger(ctx context.Context, attributes *pb.Attributes)  (*pb.Empty, error) {
+func (s *server)  CheckTriggers(ctx context.Context, attributes *pb.Attributes)  (*pb.Empty, error) {
 	documents := getAllTriggers()
 	//fmt.Println("USER: " , attributes)
 	var actions []*pb.Action
@@ -297,7 +348,7 @@ func (s *server)  CheckTrigger(ctx context.Context, attributes *pb.Attributes)  
 
 	for _,document := range documents {
 		checks := document.Condition
-		fmt.Println("Document: ", document)
+		//fmt.Println("Document: ", document)
 		var conditions []bool
 
 		for  _,check := range checks{
@@ -310,91 +361,91 @@ func (s *server)  CheckTrigger(ctx context.Context, attributes *pb.Attributes)  
 				condition := strings.Split(check, "<")
 				attribute = condition[0]
 				if i, err := strconv.Atoi(condition[1]); err == nil {
-					fmt.Println(" i: ", i)
+					//fmt.Println(" i: ", i)
 					value = int64(i)
-					fmt.Println(" value: ", value)
+					//fmt.Println(" value: ", value)
 				} else {
 					valueString = condition[1]
-					fmt.Println(" value: ", valueString)
+					//fmt.Println(" value: ", valueString)
 				}
-				fmt.Println(" attribute: ", attribute)
+				//fmt.Println(" attribute: ", attribute)
 
 				operator = "<"
-				fmt.Println(" operator: ", operator)
+				//fmt.Println(" operator: ", operator)
 
 			} else if strings.Contains(check, ">"){
 				condition := strings.Split(check, ">")
 				attribute = condition[0]
 				if i, err := strconv.Atoi(condition[1]); err == nil {
-					fmt.Println(" i = ", i)
+					//fmt.Println(" i = ", i)
 					value = int64(i)
-					fmt.Println(" value: ", value)
+					//fmt.Println(" value: ", value)
 				} else {
 					valueString = condition[1]
-					fmt.Println(" value: ", valueString)
+					//fmt.Println(" value: ", valueString)
 				}
 
-				fmt.Println(" attribute: ", attribute)
+				//fmt.Println(" attribute: ", attribute)
 
 				operator = ">"
-				fmt.Println(" operator: ", operator)
+				//fmt.Println(" operator: ", operator)
 
 			} else {
 				condition := strings.Split(check, "=")
 				attribute = condition[0]
 				if i, err := strconv.Atoi(condition[1]); err == nil {
-					fmt.Println(" i: ", i)
+					//fmt.Println(" i: ", i)
 					value = int64(i)
-					fmt.Println(" value: ", value)
+					//fmt.Println(" value: ", value)
 				} else {
 					valueString = condition[1]
-					fmt.Println(" value: ", valueString)
+					//fmt.Println(" value: ", valueString)
 				}
 
-				fmt.Println(" attribute: ", attribute)
+				//fmt.Println(" attribute: ", attribute)
 
 				operator = "="
-				fmt.Println(" operator: ", operator)
+				//fmt.Println(" operator: ", operator)
 			}
 
 			switch operator {
 			case ">":
 				rv := reflect.ValueOf(attributesObj)
 				//rv = rv.Elem()
-				fmt.Println("  rv: ", rv)
-				fmt.Println("  field by name: ", rv.FieldByName(attribute))
+				//fmt.Println("  rv: ", rv)
+				//fmt.Println("  field by name: ", rv.FieldByName(attribute))
 				if rv.FieldByName(attribute).Int() > value{
 					condition = true
 				}
-				fmt.Println(" CONDITION ", condition)
+				//fmt.Println(" CONDITION ", condition)
 				conditions = append(conditions, condition)
 
 			case "<":
 				rv := reflect.ValueOf(attributesObj)
 				//rv = rv.Elem()
-				fmt.Println("  rv: ", rv)
-				fmt.Println("  field by name: ", rv.FieldByName(attribute))
+				//fmt.Println("  rv: ", rv)
+				//fmt.Println("  field by name: ", rv.FieldByName(attribute))
 				if rv.FieldByName(attribute).Int() < value{
 					condition = true
 				}
-				fmt.Println(" CONDITION ", condition)
+				//fmt.Println(" CONDITION ", condition)
 				conditions = append(conditions, condition)
 
 			case "=":
 				rv := reflect.ValueOf(attributesObj)
 				//rv = rv.Elem()
-				fmt.Println("  rv: ", rv)
-				fmt.Println("  field by name: ", rv.FieldByName(attribute))
+				//fmt.Println("  rv: ", rv)
+				//fmt.Println("  field by name: ", rv.FieldByName(attribute))
 				if  rv.FieldByName(attribute).String() == valueString{
 					condition = true
 				}
-				fmt.Println(" CONDITION ", condition)
+				//fmt.Println(" CONDITION ", condition)
 				conditions = append(conditions, condition)
 			}
 
 		}
-		fmt.Println("CONDITIONS", conditions)
-		fmt.Println("")
+		//fmt.Println("CONDITIONS", conditions)
+		//fmt.Println("")
 
 		if !contains(conditions, false){
 			actions = document.Action
@@ -497,23 +548,26 @@ func (s *server)  UserSignUp(ctx context.Context, userStudy *pb.SignUpData) (*pb
 
 func (s *server)  GetAssignedSurvey(ctx context.Context, assignedSurvey *pb.AssignedSurvey) (*pb.SurveyData, error) {
 
-	survey := assignedSurvey.Survey
+	var result AssignedSurvey
+	ID, err := primitive.ObjectIDFromHex(assignedSurvey.Id)
+	filter1 := bson.M{"_id": ID}
 
-	var result Survey
-	objectID, err := primitive.ObjectIDFromHex(survey.Id)
-
-	filter := bson.M{"_id": objectID}
-
-	err = surveyCollection.FindOne(context.TODO(), filter).Decode(&result)
+	err = assignSurveyCollection.FindOne(context.TODO(), filter1).Decode(&result)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	return &pb.SurveyData{Id: result.ID.Hex(), Description: result.Description, Questions: result.Questions}, nil
+	var survey *pb.SurveyData = new(pb.SurveyData)
+	survey.Id = result.Survey.ID.Hex()
+	survey.Description = result.Survey.Description
+	survey.Type = result.Survey.Type
+	survey.Questions = result.Survey.Questions
+
+	return survey, nil
 
 }
 
-func (s *server)  AnswerSurvey(ctx context.Context, answer *pb.Answer) (*pb.AssignedSurvey, error) {
+func (s *server)  SubmitSurvey(ctx context.Context, answer *pb.Answer) (*pb.AssignedSurvey, error) {
 
 	assignmentID := answer.AssignmentID
 
@@ -529,7 +583,7 @@ func (s *server)  AnswerSurvey(ctx context.Context, answer *pb.Answer) (*pb.Assi
 
 	update := bson.M{
 		"$set": bson.M{
-			"survey": answer.Survey}}
+			"survey": answer.Survey, "submitted": true}}
 
 	updateResult, err := assignSurveyCollection.UpdateOne(context.TODO(), filter, update)
 	if err != nil {
